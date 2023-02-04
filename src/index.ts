@@ -1,1 +1,6 @@
-console.log("Hello World!");
+import App from './app/app';
+import './scss/styles.scss';
+import 'bootstrap';
+
+const app = new App();
+app.render();
