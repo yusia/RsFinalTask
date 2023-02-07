@@ -1,0 +1,22 @@
+<div class="game__container">
+  <div class="game__header">
+    <div class="game__word">Word you need to guess </div>
+    <div class="game__timer">Time left {n}</div>
+  </div>
+  <div class="canvas-outer">
+    <canvas class="canvas-inner" width="400" height="400"></canvas>
+  </div>
+  <section class="game__toolbar">
+    <div class="toolbar__body">
+      <div class="toolbar__tools"><input type="color" class="form-control form-control-color" id="color-input"
+          value="#563d7c" title="Choose your color">
+        <input type="range" class="form-range" min="1" max="7" step="1" value="5" id="line-width">
+        <div class="toolbar__undo t-button"></div>
+        <div class="toolbar__clear t-button"></div>
+        <div class="toolbar__save t-button"></div>
+        <input type="button" value="ShowInfo" class="toolbar__info t-button">
+      </div>
+
+    </div>
+  </section>
+</div>

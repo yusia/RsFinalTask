@@ -1,3 +1,97 @@
-.main{
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+.main {
   height: 80vh;
+}
+
+#line-width {
+  width: 150px;
+}
+
+.game {
+  &__container {
+  }
+
+  &__header {
+    width: calc(100% - 50px);
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__word {
+  }
+
+  &__timer {
+  }
+
+  &__toolbar {
+  }
+}
+.canvas-outer {
+  flex-grow: 1;
+  width: calc(100% - 50px);
+  max-width: 500px;
+  margin-right: 10px;
+}
+.border {
+}
+.border-info {
+}
+.canvas-inner {
+  object-fit: contain;
+  box-shadow: 2px 2px 12px 4px rgba(34, 60, 80, 0.51);
+  width: 100%;
+  touch-action: none;
+  border-radius: 7px;
+}
+.toolbar {
+  &__body {
+  }
+
+  &__tools {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  &__clear,
+  &__undo,
+  &__save {
+    height: 35px;
+    width: 35px;
+    background-size: cover;
+  }
+  &__clear {
+    background-image: url("./../asssets/discard.svg");
+  }
+  &__undo {
+    background-image: url("./../asssets/forward.svg");
+  }
+  &__save {
+    background-image: url("./../asssets/save.svg");
+  }
+  &__info {
+  }
+}
+#color-input {
+  // background-image: url("./../asssets/color-picker.svg");
+  height: 35px;
+  width: 35px;
+  background-size: cover;
+}
+.form-control {
+}
+.form-control-color {
+}
+.form-range {
+}
+.t-button {
+  cursor: pointer;
 }
