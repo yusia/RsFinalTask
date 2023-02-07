@@ -3,10 +3,12 @@ import Route from './route';
 
 export default class MyRouter {
   constructor(private routes: Route[]) {
+    this.addPopStateListener();
   }
 
   init() {
     this.routeChanged();
+
   }
 
   getRouteInstance(path: string): ControllerInterface | undefined {
