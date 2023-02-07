@@ -1,0 +1,42 @@
+.message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 30px;
+  flex-direction: column;
+  &__name {
+    font-size: 40px;
+  }
+
+  &__input-name-container {
+    width: 100%;
+  }
+
+  &__input-name {
+    width: 89%;
+  }
+
+  &__button-name {
+    width: 10%;
+  }
+
+  &__chat {
+    width: 100%;
+    height: 40vh;
+    background-color: rgba(40, 170, 55, 0.6);
+    border-radius: 15px;
+  }
+
+  &__input-text-container {
+    width: 100%;
+  }
+
+  &__input-text {
+    width: 89%;
+  }
+
+  &__button-text {
+    width: 10%;
+  }
+}
