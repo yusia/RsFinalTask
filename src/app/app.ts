@@ -1,10 +1,8 @@
 import 'bootstrap';
 import Router from '../router/router';
 import Route from '../router/route';
-import RoomView from '../room/room.view';
-import RoomController from '../room/room.controller';
+import {RoomView,RoomController} from '../room';
 import UsersService from '../services/users.service';
-
 import { StartPageView, StartPageController } from '../startPage';
 
 export default class App {
