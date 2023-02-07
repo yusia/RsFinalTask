@@ -92,7 +92,6 @@ function stopDraw(event) {
   if (event.type !== 'mouseout') {
     progrIndex++;
     drawProgresion.push(ctx.getImageData(0, 0, canvas.width, canvas.height))
-    // сс
     console.log(drawProgresion);
   }
 
@@ -105,7 +104,3 @@ function prev() {
   console.log(drawProgresion[drawProgresion.length - 1]);
 }
 
-
-// let fs = require('fs');
-// let fileContent = fs.readFileSync('file.txt', 'utf8');
-// console.log(fileContent);

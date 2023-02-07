@@ -36,7 +36,7 @@
 }
 .canvas-outer {
   flex-grow: 1;
-  width: calc(100% - 50px);
+  // width: calc(100% - 50px);
   max-width: 500px;
   margin-right: 10px;
 }
@@ -47,7 +47,8 @@
 .canvas-inner {
   object-fit: contain;
   box-shadow: 2px 2px 12px 4px rgba(34, 60, 80, 0.51);
-  width: 100%;
+  // важная инструкция для респонзива. Но криво работают координаты рисования.
+  // width: 100%;
   touch-action: none;
   border-radius: 7px;
 }
@@ -82,9 +83,12 @@
 }
 #color-input {
   // background-image: url("./../asssets/color-picker.svg");
-  height: 35px;
-  width: 35px;
+  background-image: url("./../asssets/rgb-colors.svg");
+  height: 30px;
+  width: 30px;
   background-size: cover;
+  background-color: transparent;
+  padding: 20px;
 }
 .form-control {
 }
