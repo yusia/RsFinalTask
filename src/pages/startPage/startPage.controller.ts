@@ -1,4 +1,4 @@
-import ControllerInterface from '../interfaces/controller.interface';
+import ControllerInterface from '../../interfaces/controller.interface';
 import {StartPageView} from './startPage.view';
 
 export  class StartPageController implements ControllerInterface {

@@ -1,4 +1,4 @@
-import ViewInterface from "../interfaces/view.interface";
+import ViewInterface from "../../interfaces/view.interface";
 import content from './room.html';
 
 export class RoomView implements ViewInterface{

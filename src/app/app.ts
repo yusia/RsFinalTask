@@ -1,9 +1,9 @@
 import 'bootstrap';
 import Router from '../router/router';
 import Route from '../router/route';
-import {RoomView,RoomController} from '../room';
+import {RoomView,RoomController} from '../pages/room';
 import UsersService from '../services/users.service';
-import { StartPageView, StartPageController } from '../startPage';
+import { StartPageView, StartPageController } from '../pages/startPage';
 
 export default class App {
   private usersService: UsersService;
