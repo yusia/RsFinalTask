@@ -24,6 +24,7 @@ export class Messanger {
     const addNameToUser = (e: Event) => {
       e.preventDefault();
       name = inputName.value;
+      inputName.value = '';
       newClientF();
     };
 
@@ -46,7 +47,6 @@ export class Messanger {
       const typingManHTML = document.querySelector('#typingMan');
       if (isTyping) {
         typingName = `${name} is typing ...`;
-        console.log('gtxfnftn');
         if (!typingManHTML) this.messangerBody.append(renderTypingMan());
       } else {
         typingName = '';
@@ -93,9 +93,32 @@ export class Messanger {
 
     function handleNewMessage(message: messegeI) {
       const p = document.createElement('p');
+      p.classList.add('message__current-message');
       p.textContent = `[${message.name}]: ${message.text}`;
       return p;
     }
+
+    const removeMessege = (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      if (!target.classList.contains('message__current-message')) return;
+      const textOfElement = target.textContent as string;
+      const indexOfStart = textOfElement.search(/:/);
+      const messageText = textOfElement.slice(indexOfStart + 2);
+      console.log(messageText);
+
+      socket.emit('removeMessage', messageText);
+    };
+    socket.on('removeMessage', (messageArr: messegeI[] | -1) => {
+      if (messageArr === -1) return;
+      messages.splice(0, messages.length + 1, ...messageArr);
+      chat.innerHTML = '';
+      messages.forEach((message) => addMessageTochat(chat, message));
+      //messages.push(message);
+      //addMessageTochat(chat, message);
+    });
+
+    this.messangerBody.addEventListener('click', removeMessege);
   }
 
   render() {
