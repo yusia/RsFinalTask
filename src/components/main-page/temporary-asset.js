@@ -40,7 +40,7 @@ let progrIndex = -1;
 canvas.addEventListener('mousedown', prepareDraw)
 canvas.addEventListener('touchstart', prepareDraw)
 
-canvas.addEventListener('mousemove', draw)
+canvas.addEventListener('mousemove',  draw)
 canvas.addEventListener('touchmove', draw)
 
 canvas.addEventListener('mouseup', stopDraw)
@@ -95,12 +95,5 @@ function stopDraw(event) {
     console.log(drawProgresion);
   }
 
-}
-let myInd = drawProgresion.length;
-
-toolbarInfo.addEventListener('click', prev)
-
-function prev() {
-  console.log(drawProgresion[drawProgresion.length - 1]);
 }
 
