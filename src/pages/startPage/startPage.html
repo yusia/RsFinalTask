@@ -1,8 +1,44 @@
-<div class="d-inline-flex p-2 bg-dark content">
+<div class="d-inline-flex p-2 container">
   <div class="start">
-    <div class="description">
-      <h2>Рисуй и Угадывай</h2>
-      <p> Игра онлайн! Угадывай что рисуют другие, получай очки за верные догадки и рисуй сам!</p>
-     </div>
-    <button class="btn btn-outline-success my-2 my-lg-0 start-btn" id="start-btn">Начать</button></div>
+    <nav class="navbar bg-light">
+      <a class="nav-link">home</a>
+
+      <a class="nav-link"><i class="fa fa-ask"></i></a>
+      <a class="nav-link">setting</a>
+    </nav>
+    <section class="container d-inline-flex room-section">
+      <div class="avatars ">
+        <div class="arrow-left-cont">←</div>
+        <div class="avatars_main">
+          <img src="../../../assets/images/avatars/1.png" class="avatar" width="150px" id="selected-avatar" >
+        </div>
+        <div class="arrow-right-cont"> →</div>
+        <div class="avatars_galery" id="avatars_galery">
+          <img src="../../../assets/images/avatars/1.png" data-id="2" class="avatar_thumb" />
+          <img src="../../../assets/images/avatars/2.png" data-id="2" class="avatar_thumb" />
+          <img src="../../../assets/images/avatars/3.png" data-id="3" class=" avatar_thumb" />
+          <img src="../../../assets/images/avatars/4.png" data-id="4" class=" avatar_thumb" />
+        </div>
+      </div>
+      <div class="room-settings-container ">
+        <button class="btn btn-outline-success my-2 my-lg-0 start-btn" id="start-btn">Play</button>
+        <div>
+          <div class="form-floating timer-container">
+            <div>
+              <img src="../../../assets/package-lock.png">
+            </div>
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+              <option selected>Timer</option>
+              <option value="90">90 seconds</option>
+              <option value="120">120 seconds</option>
+              <option value="180">180 seconds</option>
+            </select>
+            <label for="floatingSelect">Set timer</label>
+          </div>
+          <button>Create your game</button>
+        </div>
+
+      </div>
+    </section>
+  </div>
 </div>

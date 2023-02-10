@@ -1,15 +1,85 @@
-
-.description {
+.start {
   background-color: #04524c;
-  border-radius: 10% 30% 50% 70%;
-  padding-left: 30px;
-  color: $light-color;
-  width: 400px;
-  height: 200px;
+  border-radius: 25px;
+  background-color: $background-color;
+  width: 80vw;
+  height: 80vh;
+  box-shadow: 10px 0px 34px 7px $contrast-color, -8px 12px 45px 9px $friend-color;
 }
 
-.start-btn{
+.start-btn {
   background-color: $friend-color;
   color: $light-color;
   box-shadow: rgb(141 103 2) 0px -8px 40px -3px;
+}
+
+.room-settings-container {
+  display: flex;
+  flex-direction: column;
+}
+.room-section {
+  display: flex;
+  justify-content: space-around;
+}
+.avatar-container {
+  margin: auto;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.avatar {
+ // animation: vibrate-1 0.3s linear infinite both;
+}
+
+.avatars {
+  display: grid;
+  grid-template: 1fr 4fr 1fr;
+  grid-template-rows: 2fr 1fr;
+  grid-template-areas:
+      "A B C"
+      "D D D";
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  align-items: center;
+}
+.arrow-left-cont {  
+  grid-area: A;
+  color: white;
+  cursor: pointer;
+
+ // background-image: url(../../../assets/images/blow.svg) no-repeat;
+}
+.avatars_galery {
+  grid-area: D;
+  display: flex;
+  gap:10px;
+}
+
+.arrow-right-cont{
+  grid-area: C;
+  color: white;
+}
+.avatars_main{
+  grid-area: B;
+}
+.avatar_thumb{
+  width: 50px;
+  cursor: pointer;
+}
+// .i-right{
+//   width: 15px;
+//   background-size: contain;
+//   padding: 9px;
+//   -webkit-mask-size: cover;
+//   mask-size: cover;
+//   -webkit-mask-image: url("../../../assets/images/blow.svg");
+//   mask-image: url("../../../assets/images/blow.svg");
+//   background-color:   white;
+//   ;
+// }
+
+.timer-container{
+  border: $friend-color solid 1px;
+  border-radius: 5px;
 }
