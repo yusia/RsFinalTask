@@ -1,13 +1,14 @@
 import content from './startPage.html';
 
 export class StartPageView {
-
   render() {
     const frag = document.createDocumentFragment();
     frag.append(this.createContent());
     this.addStartListener(frag);
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
     document.body.append(frag);
+    //!открытие рума
+    this.goToRoom();
   }
 
   createContent(): HTMLElement {
@@ -23,9 +24,9 @@ export class StartPageView {
       this.goToRoom();
     });
   }
-  
-  goToRoom(){
-    history.pushState({title:'Your game'}, 'newUrl', '/room');
+
+  goToRoom() {
+    history.pushState({ title: 'Your game' }, 'newUrl', '/room');
     history.go();
     history.forward();
   }
