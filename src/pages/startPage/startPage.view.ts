@@ -39,7 +39,7 @@ export class StartPageView extends Page {
 
   buildImage(avatarId: number): HTMLImageElement {
     const img = document.createElement('img');
-    img.src = `../images/${avatarId}`;
+    img.src = `../images/${avatarId}.png`;
     img.dataset.id = `${avatarId}`;
     img.classList.add('avatar_thumb');
     return img;
@@ -49,7 +49,7 @@ export class StartPageView extends Page {
     const avatar = doc.getElementById('selected-avatar') as HTMLImageElement;
     const defaultAvatar = '3';
     this.user.avatar = this.user?.avatar || defaultAvatar;
-    avatar.src = `../images/${this.user.avatar}`;
+    avatar.src = `../images/${this.user.avatar}.png`;
   }
 
 
