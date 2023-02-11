@@ -1,16 +1,18 @@
-import { UserModel } from '../../models/user.model';
+import { UserModel, Page } from '../../models';
 import content from './startPage.html';
 
-export class StartPageView {
+export class StartPageView extends Page {
   private user: UserModel;
+
   constructor() {
+    super();
     this.user = new UserModel('', '');
   }
 
   render(model: { user: UserModel, onStartPlay: (newUser: UserModel) => void }) {
     this.user = model.user;
     const frag = document.createDocumentFragment();
-    frag.append(this.createContent());
+    frag.append(this.createContent(content));
 
     this.setUserName(frag);
     this.loadGaleryAvatars(frag);
@@ -18,9 +20,9 @@ export class StartPageView {
 
     this.addStartListener(frag, model.onStartPlay);
     this.addGaleryListener(frag);
-    document.body.innerHTML = '';
-    document.body.append(frag);
+    this.appendToBody(frag);
   }
+  
   setUserName(doc: DocumentFragment) {
     const input = doc.getElementById('user-name') as HTMLInputElement;
     input.value = this.user.name;
@@ -51,13 +53,6 @@ export class StartPageView {
     avatar.src = `../images/${this.user.avatar}`;
   }
 
- 
-  createContent(): HTMLElement {
-    const div = document.createElement('div');
-    div.classList.add('content');
-    div.innerHTML = content;
-    return div;
-  }
 
   addStartListener(doc: DocumentFragment, onStartPlay: (newUser: UserModel) => void) {
     doc.getElementById('start-btn')?.addEventListener('click', (e) => {

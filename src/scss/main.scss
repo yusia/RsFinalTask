@@ -18,8 +18,20 @@
   background-repeat: no-repeat;
   background-color: $background-color;
 }
-
+.inner-container{
+  margin-top: 50px;
+  
+}
 html,
 body {
   height: 100%;
+}
+.main-container {
+  background-color: #04524c;
+  border-radius: 25px;
+  background-color: $background-color;
+  width: 80vw;
+  height: 80vh;
+  box-shadow: 10px 0px 34px 7px $contrast-color, -8px 12px 45px 9px $friend-color;
+  margin-top: 50px;
 }
