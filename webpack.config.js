@@ -12,6 +12,7 @@ const config = {
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
+    assetModuleFilename: 'images/[name]'
   },
   devServer: {
     open: true,
@@ -26,9 +27,6 @@ const config = {
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin(),
     new ESLintPlugin({ extensions: "ts" }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
     rules: [

@@ -13,8 +13,15 @@ export default class App {
 
   start() {
     const router = new Router([
-      new Route('', new StartPageController(new StartPageView()), true),
-      new Route('room', new RoomController(new RoomView(), this.usersService)),
+      new Route(
+        '',
+        new StartPageController(new StartPageView(), this.usersService),
+        true
+      ),
+      new Route(
+        'room',
+        new RoomController(new RoomView(), this.usersService)
+      )
     ]);
     router.init();
   }
