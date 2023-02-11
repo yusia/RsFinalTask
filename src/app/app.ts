@@ -37,7 +37,8 @@ export default class App {
     const user = this.usersService.getSavedUser();
     if (user) {
       const elem = document.getElementById('current-user') as HTMLElement;
-      elem.innerHTML = `<img src="../images/${user.avatar}" class="thumb"><span>${user.name}</span>`;
+      elem.innerHTML = `<img src="../images/${user.avatar}" class="thumb"/>
+                        <span>${user.name}</span>`;
     }
   }
 }
