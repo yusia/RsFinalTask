@@ -35,3 +35,16 @@ body {
   box-shadow: 10px 0px 34px 7px $contrast-color, -8px 12px 45px 9px $friend-color;
   margin-top: 50px;
 }
+
+//overrides
+.navbar{
+  margin: 0 10px ;
+  color: $contrast-color;
+}
+.thumb{
+  width: 30px;
+}
+.info-container{
+  display: flex;
+  gap:10px
+}

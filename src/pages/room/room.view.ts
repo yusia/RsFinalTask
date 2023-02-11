@@ -10,7 +10,7 @@ export class RoomView extends Page {
     const frag = this.createTemplateFromHTML(content);
     
     this.addUsers(frag, model.users);
-    
+
     this.appendToBody(frag);
 
     const messanger = new MessangerController(new MessangerView(), new MessangerService());

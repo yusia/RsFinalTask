@@ -22,7 +22,7 @@ export class StartPageView extends Page {
     this.addGaleryListener(frag);
     this.appendToBody(frag);
   }
-  
+
   setUserName(doc: DocumentFragment) {
     const input = doc.getElementById('user-name') as HTMLInputElement;
     input.value = this.user.name;
@@ -30,7 +30,6 @@ export class StartPageView extends Page {
 
   loadGaleryAvatars(doc: DocumentFragment) {
     const avatarsIds = [1, 2, 3, 4];
-
     const galery = doc.getElementById('avatars_galery') as HTMLDivElement;
     galery.innerHTML = '';
     avatarsIds.forEach((avatarId) => {
@@ -65,8 +64,7 @@ export class StartPageView extends Page {
 
   goToRoom() {
     history.pushState({ title: 'Your game' }, 'newUrl', '/room');
-    history.go();
-    history.forward();
+		window.dispatchEvent(new Event('stateChange'));
   }
 
 

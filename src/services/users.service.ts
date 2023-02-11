@@ -10,18 +10,20 @@ export default class UsersService {
     localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 
-  getCurrentUser(): UserModel {
-    const user = new UserModel('', '');
-
+  getSavedUser(): UserModel | undefined {
     const userSettings = localStorage.getItem(this.userKey);
     if (userSettings) {
+      const user = new UserModel('', '');
       const savedUser = JSON.parse(userSettings) as UserModel;
       user.name = savedUser.name;
       user.avatar = savedUser.avatar;
-    } else {
-      user.name = this.generateRandomName()
+      return user;
     }
-    return user;
+    return;
+  }
+
+  getCurrentUser(): UserModel {
+    return this.getSavedUser() || new UserModel(this.generateRandomName(), '');
   }
 
   generateRandomName(): string {

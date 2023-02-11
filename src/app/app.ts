@@ -1,6 +1,5 @@
 import 'bootstrap';
-import Router from '../router/router';
-import Route from '../router/route';
+import { Router, Route } from '../router';
 import { RoomView, RoomController } from '../pages/room';
 import UsersService from '../services/users.service';
 import { StartPageView, StartPageController } from '../pages/startPage';
@@ -19,6 +18,7 @@ export default class App {
 
   start() {
     this.render();
+    this.initCurrentUser();
     const router = new Router([
       new Route(
         '',
@@ -31,5 +31,13 @@ export default class App {
       )
     ]);
     router.init();
+  }
+
+  initCurrentUser() {
+    const user = this.usersService.getSavedUser();
+    if (user) {
+      const elem = document.getElementById('current-user') as HTMLElement;
+      elem.innerHTML = `<img src="../images/${user.avatar}" class="thumb"><span>${user.name}</span>`;
+    }
   }
 }

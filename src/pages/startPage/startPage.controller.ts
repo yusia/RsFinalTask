@@ -15,5 +15,11 @@ export class StartPageController implements ControllerInterface {
 
   saveUserSettings(user: UserModel) {
     this.userService.saveUserSettings(user);
+    this.setCurrentUser(user);
+  }
+
+  setCurrentUser(user: UserModel) {
+    const elem= document.getElementById('current-user') as HTMLElement;
+    elem.innerHTML = `<img src="../images/${user.avatar}" class="thumb"><span>${user.name}</span>`;
   }
 }
