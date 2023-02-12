@@ -2,24 +2,23 @@ import { MessangerService } from '../../services/messanger.service';
 import { MessangerView } from './messanger.view';
 
 export class MessangerController {
-  constructor(private messangerView: MessangerView, private messangerServise: MessangerService) {
+  constructor(private messangerView: MessangerView, private messangerService: MessangerService) {
     this.messangerView.render();
-    this.messangerServise.getHTMLElements(this.messangerView.getHTMLElements());
+    this.messangerService.getHTMLElements(this.messangerView.getHTMLElements());
   }
 
   addEventListners() {
-    const { loginButton, messageInput, messageButton, messageBody } = this.messangerView.getHTMLElements();
+    const {  messageInput, messageButton, messageBody } = this.messangerView.getHTMLElements();
 
-    loginButton.addEventListener('click', this.messangerServise.addNameToUser.bind(this.messangerServise));
-    messageInput.addEventListener('input', this.messangerServise.whoTyping.bind(this.messangerServise));
-    messageInput.addEventListener('keyup', this.messangerServise.sendMessage.bind(this.messangerServise));
-    messageButton.addEventListener('click', this.messangerServise.sendMessage.bind(this.messangerServise));
-    messageBody.addEventListener('click', this.messangerServise.removeMessege.bind(this.messangerServise));
-    messageBody.addEventListener('click', this.messangerServise.showMessageOptions.bind(this.messangerServise));
+    messageInput.addEventListener('input', this.messangerService.whoTyping.bind(this.messangerService));
+    messageInput.addEventListener('keyup', this.messangerService.sendMessage.bind(this.messangerService));
+    messageButton.addEventListener('click', this.messangerService.sendMessage.bind(this.messangerService));
+    messageBody.addEventListener('click', this.messangerService.removeMessege.bind(this.messangerService));
+    messageBody.addEventListener('click', this.messangerService.showMessageOptions.bind(this.messangerService));
   }
 
   initView(): void {
-    this.messangerServise.runSockets();
+    this.messangerService.runSockets();
     this.addEventListners();
   }
 }

@@ -1,11 +1,16 @@
 import ControllerInterface from '../../../src/interfaces/controller.interface';
 import { RoomView } from './room.view';
-import UsersService from '../../services/users.service';
+import { MessangerService, UsersService } from '../../services';
+import { MessangerController } from '../../components/messanger/messanger.controller';
+import { MessangerView } from '../../components/messanger/messanger.view';
 
 export class RoomController implements ControllerInterface {
-  constructor(private viewInstance: RoomView, private userService: UsersService) {}
+  constructor(private viewInstance: RoomView, private userService: UsersService, private messangerService: MessangerService) { }
 
   initView(): void {
     this.viewInstance.render({ users: this.userService.getUsers() });
+
+    const messanger = new MessangerController(new MessangerView(), this.messangerService);
+    messanger.initView();
   }
 }

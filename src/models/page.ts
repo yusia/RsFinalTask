@@ -1,14 +1,14 @@
-export class Page{
-  appendToBody(doc: DocumentFragment) {
-    const id = "content";
-    const main = document.getElementById(id) as HTMLDivElement;
+export class Page {
+
+  static appendToPage(doc: DocumentFragment, elementId = 'content') {
+    const main = document.getElementById(elementId) as HTMLDivElement;
     main.innerHTML = '';
     main.appendChild(doc);
   }
 
-  createContent(content: string): HTMLElement {
+  static createContent(content: string, cssClass = 'inner-container'): HTMLElement {
     const div = document.createElement('div');
-    div.classList.add('inner-container');
+    if(cssClass)  div.classList.add(cssClass);
     div.innerHTML = content;
     return div;
   }

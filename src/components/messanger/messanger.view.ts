@@ -2,7 +2,7 @@ import content from './messanger.html';
 import { isHTMLElem } from '../../helpFunctions/HTMLElements';
 import { isHTMLInput } from '../../helpFunctions/HTMLElements';
 import { ChatElements } from '../../interfaces/messenger.elements';
-
+import { Page } from '../../models';
 
 export class MessangerView {
   body: HTMLElement;
@@ -11,8 +11,6 @@ export class MessangerView {
   }
   getHTMLElements(): ChatElements {
     const elements: ChatElements = {
-      loginInput: isHTMLInput(this.body.querySelector('.message__input-name')),
-      loginButton: isHTMLElem(this.body.querySelector('.message__button-name')),
       chat: isHTMLElem(this.body.querySelector('.message__chat')),
       messageInput: isHTMLInput(this.body.querySelector('.message__input-text')),
       messageButton: isHTMLElem(this.body.querySelector('.message__button-text')),
@@ -21,7 +19,10 @@ export class MessangerView {
     };
     return elements;
   }
+
   render() {
-    this.body.innerHTML = content;
+    const frag = document.createDocumentFragment();
+    frag.append(Page.createContent(content));
+    Page.appendToPage(frag, 'chat');
   }
 }
