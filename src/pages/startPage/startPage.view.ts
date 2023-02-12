@@ -1,31 +1,38 @@
 import { UserModel, Page } from '../../models';
 import content from './startPage.html';
 
-export class StartPageView extends Page {
+export class StartPageView {
   private user: UserModel;
 
   constructor() {
-    super();
     this.user = new UserModel('', '');
   }
 
-  render(model: { user: UserModel, onStartPlay: (newUser: UserModel) => void }) {
+  render(model: { user: UserModel, onPlay: (newUser: UserModel) => void }) {
     this.user = model.user;
     const frag = document.createDocumentFragment();
-    frag.append(this.createContent(content));
+    frag.append(Page.createContent(content));
 
     this.setUserName(frag);
     this.loadGaleryAvatars(frag);
     this.setDefaultAvatar(frag);
 
-    this.addStartListener(frag, model.onStartPlay);
+    this.addStartListener(frag, model.onPlay);
     this.addGaleryListener(frag);
-    this.appendToBody(frag);
+    Page.appendToPage(frag);
   }
 
   setUserName(doc: DocumentFragment) {
     const input = doc.getElementById('user-name') as HTMLInputElement;
+    input.addEventListener('change', () => {
+      this.user.name = this.getUserName(); //todo get from e.target
+    })
     input.value = this.user.name;
+  }
+
+  getUserName(): string {
+    const input = document.getElementById('user-name') as HTMLInputElement;
+    return input.value;
   }
 
   loadGaleryAvatars(doc: DocumentFragment) {
@@ -64,7 +71,7 @@ export class StartPageView extends Page {
 
   goToRoom() {
     history.pushState({ title: 'Your game' }, 'newUrl', '/room');
-		window.dispatchEvent(new Event('stateChange'));
+    window.dispatchEvent(new Event('stateChange'));
   }
 
 

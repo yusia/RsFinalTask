@@ -1,12 +1,15 @@
 import { UserModel } from "../models/user.model";
 
-export default class UsersService {
+export class UsersService {
   userKey = "usersettings";
+  private currentUser: UserModel | undefined;
+
   getUsers(): string[] {
     return ['user1', 'user2', 'user3']
   }
 
   saveUserSettings(user: UserModel) {
+    this.currentUser = user;
     localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 
@@ -22,8 +25,12 @@ export default class UsersService {
     return;
   }
 
-  getCurrentUser(): UserModel {
+  getTempUser() {
     return this.getSavedUser() || new UserModel(this.generateRandomName(), '');
+  }
+
+  getCurrentUser(): UserModel | undefined {
+    return this.currentUser;
   }
 
   generateRandomName(): string {

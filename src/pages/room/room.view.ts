@@ -1,20 +1,13 @@
 import content from './room.html';
 import { UsersComponent } from '../../components/user/userComponent';
-import { MessangerController } from '../../components/messanger/messanger.controller';
-import { MessangerService } from '../../services/messanger.service';
-import { MessangerView } from '../../components/messanger/messanger.view';
 import {Page} from '../../models';
 
-export class RoomView extends Page {
+export class RoomView {
   render(model: { users: string[] }) {
     const frag = this.createTemplateFromHTML(content);
-    
+  
     this.addUsers(frag, model.users);
-
-    this.appendToBody(frag);
-
-    const messanger = new MessangerController(new MessangerView(), new MessangerService());
-    messanger.initView();
+    Page.appendToPage(frag);
   }
 
   addUsers(fragment: DocumentFragment, users: string[]) {

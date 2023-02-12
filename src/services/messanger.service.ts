@@ -1,8 +1,7 @@
 import { ChatElements } from '../interfaces/messenger.elements';
-import { io } from 'socket.io-client';
 import { messageI } from '../interfaces/messageI';
 import { isHTMLElem } from '../helpFunctions/HTMLElements';
-const socket = io('http://localhost:4444');
+import { ConnectionService } from './connection.service';
 
 export class MessangerService {
   static HTMLElements: ChatElements;
@@ -10,35 +9,34 @@ export class MessangerService {
   messages: messageI[];
   newClient: boolean;
   typingName: string;
-  socket;
 
-  constructor() {
+  constructor(private connectionService: ConnectionService) {
     this.name = '';
     this.messages = [];
     //
     this.newClient = false;
     //
     this.typingName = '';
-    this.socket = io('http://localhost:4444');
   }
-
+  socket() {
+    return this.connectionService.connection;
+  }
   runSockets() {
     const chat = MessangerService.HTMLElements.chat;
-    console.log(socket);
-
+    console.log(this.socket());
     const messangerBody = MessangerService.HTMLElements.messageBody;
 
-    socket.emit('findAllMessages', {}, (response: messageI[]) => {
+    this.socket()?.emit('findAllMessages', {}, (response: messageI[]) => {
       this.messages.push(...response);
       this.messages.forEach((message) => this.addMessageTochat(chat, message));
     });
 
-    socket.on('message', (message) => {
+    this.socket()?.on('message', (message) => {
       this.messages.push(message);
       this.addMessageTochat(chat, message);
     });
 
-    socket.on('typing', ({ name, isTyping }) => {
+    this.socket()?.on('typing', ({ name, isTyping }) => {
       const typingManHTML = document.querySelector('#typingMan');
       if (isTyping) {
         this.typingName = `${name} is typing ...`;
@@ -51,7 +49,7 @@ export class MessangerService {
       }
     });
 
-    socket.on('removeMessage', (messageArr: messageI[] | -1) => {
+    this.socket()?.on('removeMessage', (messageArr: messageI[] | -1) => {
       if (messageArr === -1) return;
       this.messages.splice(0, this.messages.length + 1, ...messageArr);
       console.log(this.messages);
@@ -63,16 +61,8 @@ export class MessangerService {
     });
   }
 
-  addNameToUser(e: Event) {
-    e.preventDefault();
-    const InputName = MessangerService.HTMLElements.loginInput;
-    this.name = InputName.value;
-    InputName.value = '';
-    this.newClientF();
-  }
-
-  newClientF() {
-    socket.emit('join', { name: this.name }, () => {
+  newClientF(name: string) {
+    this.socket()?.emit('join', { name: name }, () => {
       this.newClient = true;
       return this.newClient;
     });
@@ -83,15 +73,15 @@ export class MessangerService {
     if (e instanceof KeyboardEvent && e.code !== 'Enter') return;
 
     const inputMessage = MessangerService.HTMLElements.messageInput;
-    socket.emit('createMessage', { text: inputMessage.value }, () => {
+    this.socket()?.emit('createMessage', { text: inputMessage.value }, () => {
       inputMessage.value = '';
     });
   }
 
   whoTyping() {
-    socket.emit('typing', { isTyping: true });
+    this.socket()?.emit('typing', { isTyping: true });
     setTimeout(() => {
-      socket.emit('typing', { isTyping: false });
+      this.socket()?.emit('typing', { isTyping: false });
     }, 2000);
   }
 
@@ -114,7 +104,7 @@ export class MessangerService {
     const textOfElement = message.textContent as string;
     const indexOfStart = textOfElement.search(/:/);
     const messageText = textOfElement.slice(indexOfStart + 2);
-    socket.emit('removeMessage', messageText);
+    this.socket()?.emit('removeMessage', messageText);
     //
   }
 
