@@ -30,6 +30,6 @@ export class StartPageController implements ControllerInterface {
 
   renderNewUser(user: UserModel) {
     const elem = document.getElementById('current-user') as HTMLElement;
-    elem.innerHTML = `<img src="../images/${user.avatar}" class="thumb"><span>${user.name}</span>`;
+    elem.innerHTML = `<img src="../images/${user.avatar}.png" class="thumb"><span>${user.name}</span>`;
   }
 }

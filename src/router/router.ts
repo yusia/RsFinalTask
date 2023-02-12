@@ -23,6 +23,9 @@ export class Router {
     window.addEventListener('stateChange', () => {
       this.routeChanged();
     });
+    window.addEventListener('popstate', () => {
+      this.routeChanged();
+    });
   }
 
   routeChanged(): void {
