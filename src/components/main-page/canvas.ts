@@ -12,6 +12,8 @@ export default class Canvas {
   static lineWidth = 10;
   startX: number;
   startY: number;
+  // !test
+  static XNYList: { x: number, y: number }[] = [{ x: 0, y: 0 }];
 
   constructor() {
     this.isDrawing = false;
@@ -21,23 +23,23 @@ export default class Canvas {
 
   }
 
-  setupCanvas() {
+  setupCanvas(): { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D } {
     const mainHtml = document.body.querySelector('#main') as HTMLElement;
     mainHtml.innerHTML = content;
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
-    const context = canvas.getContext('2d',
-      {
-        willReadFrequently: true
-      }
-    ) as CanvasRenderingContext2D;
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     Canvas.canvas = canvas;
     Canvas.context = context;
+    return {
+      canvas: Canvas.canvas,
+      context: Canvas.context
+    }
   }
 
   resize() {
     if (Canvas.context && Canvas.canvas) {
-      Canvas.context.canvas.width = 200;
-      Canvas.context.canvas.height = 200;
+      // Canvas.context.canvas.width = 200;
+      // Canvas.context.canvas.height = 200;
       // Canvas.context.canvas.width = Number(window.getComputedStyle(Canvas.canvas).width);
       // Canvas.context.canvas.height = Number(window.getComputedStyle(Canvas.canvas).height);
     }
@@ -57,47 +59,64 @@ export default class Canvas {
       const lineColorBtn = document.querySelector('.toolbar__color-all') as HTMLInputElement;
       lineColorBtn.addEventListener('input', Canvas.changeLineColor);
 
+      const downloadBtn = document.querySelector('.toolbar__download') as HTMLElement;
+      downloadBtn.addEventListener('click', this.downloadPainting);
+
       Canvas.canvas.addEventListener('mousedown', this.startDraw);
       Canvas.canvas.addEventListener('mousemove', this.draw);
       Canvas.canvas.addEventListener('mouseup', this.endDraw);
-      // Canvas.canvas.addEventListener('mouseout', this.endDraw);
+      Canvas.canvas.addEventListener('mouseout', this.endDraw);
       Canvas.canvas.addEventListener("touchstart", this.startDraw);
       Canvas.canvas.addEventListener("touchmove", this.draw);
       Canvas.canvas.addEventListener("touchend", this.endDraw);
-      // Canvas.canvas.addEventListener("touchcancel", this.endDraw);
+      Canvas.canvas.addEventListener("touchcancel", this.endDraw);
     }
   }
 
   removeDrawRights() {
     if (Canvas.canvas) {
-      const canvas = Canvas.canvas;
-      canvas.removeEventListener('mousedown', this.startDraw);
-      canvas.removeEventListener('mousemove', this.draw);
-      canvas.removeEventListener('mouseup', this.endDraw);
-      canvas.removeEventListener('mouseout', this.endDraw);
+      Canvas.canvas.removeEventListener('mousedown', this.startDraw);
+      Canvas.canvas.removeEventListener('mousemove', this.draw);
+      Canvas.canvas.removeEventListener('mouseup', this.endDraw);
+      Canvas.canvas.removeEventListener('mouseout', this.endDraw);
 
-      canvas.removeEventListener("touchstart", this.startDraw);
-      canvas.removeEventListener("touchmove", this.draw);
-      canvas.removeEventListener("touchend", this.endDraw);
-      canvas.removeEventListener("touchcancel", this.endDraw);
+      Canvas.canvas.removeEventListener("touchstart", this.startDraw);
+      Canvas.canvas.removeEventListener("touchmove", this.draw);
+      Canvas.canvas.removeEventListener("touchend", this.endDraw);
+      Canvas.canvas.removeEventListener("touchcancel", this.endDraw);
     }
   }
 
   startDraw(e: MouseEvent | TouchEvent) {
     this.isDrawing = true;
-    this.startX = (e as TouchEvent).changedTouches ?
-      (e as TouchEvent).changedTouches[0].clientX :
-      (e as MouseEvent).clientX;
-    this.startY = (e as TouchEvent).changedTouches ?
-      (e as TouchEvent).changedTouches[0].clientY :
-      (e as MouseEvent).clientY;
+
+    // this.startX = (e as TouchEvent).changedTouches ?
+    //   (e as TouchEvent).changedTouches[0].clientX :
+    //   (e as MouseEvent).clientX;
+    // this.startY = (e as TouchEvent).changedTouches ?
+    //   (e as TouchEvent).changedTouches[0].clientY :
+    //   (e as MouseEvent).clientY;
+    if (Canvas.canvas && Canvas.context) {
+      // Canvas.context.beginPath()
+      // const canvasOffsetX = Canvas.canvas.offsetLeft;
+      // const canvasOffsetY = Canvas.canvas.offsetTop;
+      // const pointerX = (e as MouseEvent).clientX - canvasOffsetX
+      // const pointerY = (e as MouseEvent).clientY - canvasOffsetY
+      // Canvas.context.moveTo(pointerX, pointerY)
+      // Canvas.context.beginPath();
+      // Canvas.context.lineTo(this.startX, this.startY)
+    }
     e.preventDefault();
   }
 
-  draw(e: MouseEvent | TouchEvent) {
+  draw(e: MouseEvent | TouchEvent): { x: number, y: number } {
     if (!this.isDrawing) {
-      return;
+      return {
+        x: -1,
+        y: -1
+      }
     }
+
     if (Canvas.canvas && Canvas.context) {
       const canvasOffsetX = Canvas.canvas.offsetLeft;
       const canvasOffsetY = Canvas.canvas.offsetTop;
@@ -105,12 +124,29 @@ export default class Canvas {
       Canvas.context.strokeStyle = Canvas.lineColor;
       Canvas.context.lineCap = 'round';
       Canvas.context.lineJoin = 'round';
+
+      let pointerX = (e as MouseEvent).clientX - canvasOffsetX
+      let pointerY = (e as MouseEvent).clientY - canvasOffsetY
       if ((e as TouchEvent).changedTouches) {
-        Canvas.context.lineTo((e as TouchEvent).changedTouches[0].clientX - canvasOffsetX, (e as TouchEvent).changedTouches[0].clientY - canvasOffsetY);
-      } else {
-        Canvas.context.lineTo((e as MouseEvent).clientX - canvasOffsetX, (e as MouseEvent).clientY - canvasOffsetY);
+        pointerX = (e as TouchEvent).changedTouches[0].clientX - canvasOffsetX
+        pointerY = (e as TouchEvent).changedTouches[0].clientY - canvasOffsetY
       }
+      Canvas.context.lineTo(pointerX, pointerY);
       Canvas.context.stroke();
+
+      // !
+      Canvas.XNYList.push({ x: pointerX, y: pointerY });
+      // console.log(Canvas.XNYList[Canvas.XNYList.length - 1]);
+      // console.log(Canvas.XNYList.length);
+      return {
+        x: pointerX,
+        y: pointerY
+      }
+    }
+
+    return {
+      x: 0,
+      y: 0
     }
   }
 
@@ -128,6 +164,16 @@ export default class Canvas {
         }
       }
     }
+    // !time
+    // console.time('start');
+
+    // for (let i = 0; i < Canvas.drawProgresion[0].data.length; i++) {
+    //   // i++
+    //   continue
+    // }
+    // console.timeEnd('start');
+    // console.log('ended');
+
   }
 
   static changeLineSize() {
@@ -144,7 +190,6 @@ export default class Canvas {
     if (Canvas.context && Canvas.canvas) {
       Canvas.context.clearRect(0, 0, Canvas.canvas.width, Canvas.canvas.height);
       Canvas.drawProgresionIndex = -1;
-      console.log('canvas cleaned');
       Canvas.drawProgresion = [];
     }
   }
@@ -161,15 +206,20 @@ export default class Canvas {
       Canvas.context.putImageData(Canvas.drawProgresion[Canvas.drawProgresionIndex], 0, 0);
     }
   }
+
+  downloadPainting(): void {
+    if (Canvas.canvas && Canvas.context) {
+      const link = document.createElement('a');
+      link.download = 'game-painting.png';
+      link.href = Canvas.canvas.toDataURL('image/png');
+      link.click();
+    }
+  }
   // ! test stuff
   static copyCurrentState(): string {
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
-    const context = canvas.getContext('2d',
-      {
-        willReadFrequently: true
-      }
-    ) as CanvasRenderingContext2D;
-    // const data = Canvas.drawProgresion[Canvas.drawProgresion.length - 1];
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+
     const data = context.getImageData(0, 0, canvas.width, canvas.height);
     console.log(data, 'original');
     const stringifued = JSON.stringify(data.data);
@@ -179,27 +229,38 @@ export default class Canvas {
     return stringifued
   }
 
-  static pasteOtherPainting(data: string) {
-    const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
-    const context = canvas.getContext('2d',
-      {
-        willReadFrequently: true
-      }
-    ) as CanvasRenderingContext2D;
-    // const dadata = new ImageData({
-    //   data: JSON.parse(data)
-    //   colorSpace: "srgb"
-    //     height: 200
-    //   width: 200
-    // });
-    // dadata[colorSpace] = "srgb"
-    // dadata[height] = 200
-    // dadata[width] = 200
+  static pasteOtherPainting() {
+    const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-    context.putImageData(JSON.parse(data), 0, 0);
+    const lastPoint = Canvas.XNYList[Canvas.XNYList.length - 1];
+    console.log(lastPoint);
+    setInterval(() => {
+
+      // context.beginPath();
+      const lastPoint = Canvas.XNYList[Canvas.XNYList.length - 1]
+      // const preLastPoint = Canvas.XNYList[Canvas.XNYList.length - 2]
+      // const previousX = Canvas.XNYList[Canvas.XNYList.length - 1].x
+      // const previousy = Canvas.XNYList[Canvas.XNYList.length - 1].y
+
+      // context.moveTo(preLastPoint.x, preLastPoint.y)
+      context.beginPath()
+      const xx = lastPoint.x
+      const yy = lastPoint.y
+      context.lineWidth = 6;
+      context.strokeStyle = 'red';
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+      context.lineTo(xx, yy);
+      context.stroke();
+      context.closePath()
+
+    }, 0)
+
+    // context.putImageData(JSON.parse(data), 0, 0);
   }
 
-  static saveToLocalStorage() {
+  saveToLocalStorage() {
     const saveBtn = document.querySelector('.toolbar__save') as HTMLElement;
     saveBtn.addEventListener('click', function save() {
       const canvasState = Canvas.copyCurrentState();
@@ -209,11 +270,7 @@ export default class Canvas {
 
   static testPasteFromLocalStorage() {
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
-    const context = canvas.getContext('2d',
-      {
-        willReadFrequently: true
-      }
-    ) as CanvasRenderingContext2D;
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     console.log(context);
     const pasteBtn = document.querySelector('.toolbar__info') as HTMLElement;
@@ -228,8 +285,8 @@ export default class Canvas {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
-
-    Canvas.saveToLocalStorage();
+    Canvas.pasteOtherPainting()
+    // Canvas.saveToLocalStorage();
     Canvas.testPasteFromLocalStorage();
   }
 }

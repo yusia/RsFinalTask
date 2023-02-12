@@ -36,6 +36,7 @@
   }
 }
 .canvas-outer {
+  display: flex;
   flex-grow: 1;
   // width: calc(100% - 50px);
   max-width: 500px;
@@ -52,6 +53,7 @@
   // width: 100%;
   touch-action: none;
   border-radius: 7px;
+  display: block;
 }
 .toolbar {
   &__body {
@@ -65,7 +67,8 @@
 
   &__clear,
   &__undo,
-  &__save {
+  &__save,
+  &__download {
     height: 35px;
     width: 35px;
     background-size: cover;
@@ -78,6 +81,9 @@
   }
   &__save {
     background-image: url("./../asssets/save.svg");
+  }
+  &__download {
+    background-image: url("./../asssets/download.svg");
   }
   &__info {
   }
