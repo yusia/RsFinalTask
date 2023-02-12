@@ -33,9 +33,8 @@ export default class App {
   }
 
   initAppView() {
-    this.view.render();
-    this.initCurrentUser();
-
+    const user = this.usersService.getCurrentUser();
+    this.view.render(user);
   }
 
   onLogin() {
@@ -43,12 +42,4 @@ export default class App {
     //todo move only registration on server
   }
 
-  initCurrentUser() {
-    const user = this.usersService.getCurrentUser();
-    if (user) {
-      const elem = document.getElementById('current-user') as HTMLElement;
-      elem.innerHTML = `<img src="../images/${user.avatar}.png" class="thumb"/>
-                        <span>${user.name}</span>`;
-    }
-  }
 }
