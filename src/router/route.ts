@@ -1,6 +1,6 @@
 import ControllerInterface from "../interfaces/controller.interface";
 
-export default class Route {
+export class Route {
   default: boolean | undefined = false;
 
   constructor(public name: string, public controller: ControllerInterface, defaultRoute?: boolean) {

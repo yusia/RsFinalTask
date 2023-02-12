@@ -1,9 +1,9 @@
 import ControllerInterface from '../interfaces/controller.interface';
-import Route from './route';
+import { Route } from './route';
 
-export default class MyRouter {
+export class Router {
   constructor(private routes: Route[]) {
-    this.addPopStateListener();
+    this.addStateListener();
   }
 
   init() {
@@ -19,10 +19,8 @@ export default class MyRouter {
     return this.routes.filter(r => r.default)[0].controller;
   }
 
-  addPopStateListener() {
-    window.addEventListener('popstate', (e: Event) => {
-      const state = (e as PopStateEvent).state;
-      console.log('popstate',state);
+  addStateListener() {
+    window.addEventListener('stateChange', () => {
       this.routeChanged();
     });
   }

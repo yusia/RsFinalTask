@@ -1,4 +1,4 @@
-import ControllerInterface from '../../interfaces/controller.interface';
+import ControllerInterface from '../../../src/interfaces/controller.interface';
 import { RoomView } from './room.view';
 import UsersService from '../../services/users.service';
 
