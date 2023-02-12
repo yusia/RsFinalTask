@@ -1,0 +1,28 @@
+.room-flex {
+  display: grid;
+  grid-template-columns: 20% auto 30%;
+  gap: 1em;
+}
+
+.canvas {
+  background-color: lightblue;
+  width: 100%;
+  border-radius: 1em;
+}
+.user-list {
+  display: flex;
+  flex-direction: column;
+}
+.user {
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+  margin: 15px;
+  background-color: $friend-color;
+  box-shadow: rgb(141 103 2) 0px -8px 40px -3px;
+}
+.chat {
+  background-color: lightgray;
+  border-radius: 10px;
+  width: 100%;
+}

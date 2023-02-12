@@ -1,11 +1,46 @@
-import content from './app.html';
 import 'bootstrap';
-import Canvas from './../components/main-page/canvas'
+import { Router, Route } from '../router';
+import { RoomView, RoomController } from '../pages/room';
+import { UsersService, MessangerService, ConnectionService } from '../services';
+import { StartPageView, StartPageController } from '../pages/startPage';
+import { AppView } from './app.view';
 
-const canv = new Canvas()
+// const canv = new Canvas()
 export default class App {
-  render() {
-    document.body.innerHTML = content;
-    canv.render()
+  usersService: UsersService;
+  connectionService: ConnectionService;
+  messangerService: MessangerService;
+  view: AppView;
+
+  constructor() {
+    this.usersService = new UsersService();
+    this.connectionService = new ConnectionService();
+    this.messangerService = new MessangerService(this.connectionService);
+    this.view = new AppView();
   }
+
+  start() {
+    this.initAppView();
+    const router = new Router([
+      new Route('',
+        new StartPageController(new StartPageView(), this.usersService, this.connectionService, this.messangerService),
+        true
+      ),
+      new Route('room',
+        new RoomController(new RoomView(), this.usersService, this.messangerService)
+      )
+    ]);
+    router.init();
+  }
+
+  initAppView() {
+    const user = this.usersService.getCurrentUser();
+    this.view.render(user);
+  }
+
+  onLogin() {
+    // temp open connection on login 
+    //todo move only registration on server
+  }
+
 }

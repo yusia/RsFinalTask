@@ -3,4 +3,4 @@ import './scss/styles.scss';
 import 'bootstrap';
 
 const app = new App();
-app.render();
+app.start();
