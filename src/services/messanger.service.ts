@@ -54,6 +54,8 @@ export class MessangerService {
     socket.on('removeMessage', (messageArr: messageI[] | -1) => {
       if (messageArr === -1) return;
       this.messages.splice(0, this.messages.length + 1, ...messageArr);
+      console.log(this.messages);
+
       chat.innerHTML = '';
       this.messages.forEach((message) => this.addMessageTochat(chat, message));
       //this.messages.push(message);
@@ -103,8 +105,13 @@ export class MessangerService {
 
   removeMessege(e: Event) {
     const target = isHTMLElem(e.target);
-    if (!target.classList.contains('message__current-message')) return;
-    const textOfElement = target.textContent as string;
+    if (!target.classList.contains('message__current-message-menu-options-delite')) return;
+
+    const messageElement = target.parentElement?.parentElement?.parentElement as HTMLElement;
+
+    const message = isHTMLElem(messageElement.childNodes[0]);
+
+    const textOfElement = message.textContent as string;
     const indexOfStart = textOfElement.search(/:/);
     const messageText = textOfElement.slice(indexOfStart + 2);
     socket.emit('removeMessage', messageText);
@@ -118,10 +125,42 @@ export class MessangerService {
   }
 
   handleNewMessage(message: messageI) {
-    const p = document.createElement('p');
-    p.classList.add('message__current-message');
-    p.textContent = `[${message.name}]: ${message.text}`;
-    return p;
+    const li = document.createElement('li');
+    li.classList.add('message__current-message');
+
+    const messageText = document.createElement('p');
+    messageText.classList.add('message__current-message-text');
+    messageText.textContent = `[${message.name}]: ${message.text}`;
+
+    const menuContainer = document.createElement('div');
+    menuContainer.classList.add('message__current-message-menu-container');
+
+    const menu = document.createElement('div');
+    menu.classList.add('message__current-message-menu');
+    menuContainer.append(menu);
+
+    const optionsContainer = document.createElement('div');
+    optionsContainer.classList.add('message__current-message-menu-options');
+    menuContainer.append(optionsContainer);
+
+    const deliteOption = document.createElement('p');
+    deliteOption.classList.add('message__current-message-menu-options-delite');
+    deliteOption.textContent = 'delite';
+    optionsContainer.append(deliteOption);
+
+    li.append(messageText);
+    li.append(menuContainer);
+
+    return li;
+  }
+
+  showMessageOptions(e: Event) {
+    const target = isHTMLElem(e.target);
+    if (!target.classList.contains('message__current-message-menu')) return;
+    target.classList.toggle('active-menu');
+
+    const options = isHTMLElem(target.nextSibling);
+    options.classList.toggle('activ-options');
   }
 
   getHTMLElements(elements: ChatElements): void {

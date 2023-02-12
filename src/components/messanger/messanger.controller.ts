@@ -15,6 +15,7 @@ export class MessangerController {
     messageInput.addEventListener('keyup', this.messangerServise.sendMessage.bind(this.messangerServise));
     messageButton.addEventListener('click', this.messangerServise.sendMessage.bind(this.messangerServise));
     messageBody.addEventListener('click', this.messangerServise.removeMessege.bind(this.messangerServise));
+    messageBody.addEventListener('click', this.messangerServise.showMessageOptions.bind(this.messangerServise));
   }
 
   initView(): void {

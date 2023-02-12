@@ -3,14 +3,6 @@ import { isHTMLElem } from '../../helpFunctions/HTMLElements';
 import { isHTMLInput } from '../../helpFunctions/HTMLElements';
 import { ChatElements } from '../../interfaces/messenger.elements';
 
-//interface ChatElements {
-//  loginInput: HTMLInputElement;
-//  loginButton: HTMLElement;
-//  chat: HTMLElement;
-//  messageInput: HTMLInputElement;
-//  messageButton: HTMLElement;
-//  messageBody: HTMLElement;
-//}
 
 export class MessangerView {
   body: HTMLElement;
@@ -24,6 +16,7 @@ export class MessangerView {
       chat: isHTMLElem(this.body.querySelector('.message__chat')),
       messageInput: isHTMLInput(this.body.querySelector('.message__input-text')),
       messageButton: isHTMLElem(this.body.querySelector('.message__button-text')),
+      messageMenu: isHTMLElem(this.body.querySelector('.message__button-text')),
       messageBody: this.body,
     };
     return elements;
