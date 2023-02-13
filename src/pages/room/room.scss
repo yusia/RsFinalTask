@@ -7,8 +7,105 @@
 .canvas {
   background-color: lightblue;
   width: 100%;
+  max-width: 500px;
   border-radius: 1em;
 }
+#line-width {
+  width: 100%;
+  max-width: 110px;
+}
+
+.game {
+  &__container {
+  }
+
+  &__header {
+    width: calc(100% - 50px);
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__word {
+  }
+
+  &__timer {
+  }
+
+  &__toolbar {
+  }
+}
+.canvas-outer {
+  display: flex;
+  flex-grow: 1;
+  max-width: 500px;
+}
+.border {
+}
+.border-info {
+}
+.canvas-inner {
+  background-color: #fff;
+  object-fit: contain;
+  box-shadow: 2px 2px 12px 4px rgba(34, 60, 80, 0.51);
+  // важная инструкция для респонзива. Но криво работают координаты рисования.
+  // width: 100%;
+  touch-action: none;
+  border-radius: 7px;
+  display: block;
+}
+.toolbar {
+  &__body {
+  }
+
+  &__tools {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  &__clear,
+  &__undo,
+  &__save,
+  &__download {
+    height: 35px;
+    width: 35px;
+    background-size: cover;
+  }
+  &__clear {
+    background-image: url("./../asssets/discard.svg");
+  }
+  &__undo {
+    background-image: url("./../asssets/forward.svg");
+  }
+  &__save {
+    background-image: url("./../asssets/save.svg");
+  }
+  &__download {
+    background-image: url("./../asssets/download.svg");
+  }
+  &__info {
+  }
+}
+#color-input {
+  // background-image: url("./../asssets/color-picker.svg");
+  background-image: url("./../asssets/rgb-colors.svg");
+  height: 30px;
+  width: 30px;
+  background-size: cover;
+  background-color: transparent;
+  padding: 20px;
+}
+.form-control {
+}
+.form-control-color {
+}
+.form-range {
+}
+.t-button {
+  cursor: pointer;
+}
+
 .user-list {
   display: flex;
   flex-direction: column;

@@ -1,38 +1,46 @@
-// import { doc } from 'prettier';
 export * from './room.controller';
 export * from './room.view';
-import content from './room.html';
 
+import { CanvasStep } from './../../interfaces/canvas-logic';
 export class CanvasLogic {
   public isDrawing: boolean;
   static context: CanvasRenderingContext2D | undefined;
   static canvas: HTMLCanvasElement | undefined;
   static drawProgresion: ImageData[];
   static drawProgresionIndex: number;
-  static lineColor = '#fcd3fd';
-  // static lineColor = '#acd3ed';
+  // static lineColor = '#fcd3fd';
+  static lineColor = '#acd3ed';
   static lineWidth = 10;
   startX: number;
   startY: number;
   // !test
   static XNYList: { x: number, y: number }[] = [{ x: 0, y: 0 }];
 
+  static oneLineCoords: [{ x: number, y: number }] = [{ x: 0, y: 0 }];
+  static linesSteps: CanvasStep[] = [{
+    coords: [
+      {
+        x: 0,
+        y: 0
+      }
+    ],
+    lineWidth: 0,
+    strokeStyle: 'red',
+  }];
+
   constructor() {
     this.isDrawing = false;
     this.startX = 2;
     this.startY = 2;
     CanvasLogic.drawProgresionIndex = -1;
-
   }
 
   setupCanvas(): { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D } {
-    const mainHtml = document.body.querySelector('#main') as HTMLElement;
-    mainHtml.innerHTML = content;
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     CanvasLogic.canvas = canvas;
     CanvasLogic.context = context;
-    // window.addEventListener('resize', this.resize);
+    window.addEventListener('resize', this.resize);
     return {
       canvas: CanvasLogic.canvas,
       context: CanvasLogic.context
@@ -41,16 +49,11 @@ export class CanvasLogic {
 
   resize() {
     if (CanvasLogic.context && CanvasLogic.canvas) {
-      const canvasOuter = document.querySelector('.canvas-outer') as Element;
-      const canvasOuterWidth = window.getComputedStyle(canvasOuter).width.slice(0, -2);
-      console.log(Math.floor(+canvasOuterWidth));
-      // console.log(window.getComputedStyle(canvasOuter).width);
-      CanvasLogic.context.canvas.width = Math.floor(+canvasOuterWidth);
-
-      CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
-      console.log('resized');
-      // CanvasLogic.context.canvas.width = Number(window.getComputedStyle(CanvasLogic.canvas).width);
-      // CanvasLogic.context.canvas.height = Number(window.getComputedStyle(CanvasLogic.canvas).height);
+      // ! раскомменть и убери второй канвас с html, когда будет все готово
+      // const canvasOuter = document.querySelector('.canvas-outer') as Element;
+      // const canvasOuterWidth = window.getComputedStyle(canvasOuter).width.slice(0, -2);
+      // CanvasLogic.context.canvas.width = Math.floor(+canvasOuterWidth);
+      // CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
     }
   }
 
@@ -143,16 +146,19 @@ export class CanvasLogic {
       CanvasLogic.context.lineTo(pointerX, pointerY);
       CanvasLogic.context.stroke();
 
-      // !
+      //!!! массив точек линии
+      CanvasLogic.oneLineCoords.push({
+        x: pointerX,
+        y: pointerY
+      })
+
       CanvasLogic.XNYList.push({ x: pointerX, y: pointerY });
       // console.log(CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1]);
-      // console.log(CanvasLogic.XNYList.length);
       return {
         x: pointerX,
         y: pointerY
       }
     }
-
     return {
       x: 0,
       y: 0
@@ -173,6 +179,17 @@ export class CanvasLogic {
         }
       }
     }
+
+    const step: CanvasStep = {
+      coords: CanvasLogic.oneLineCoords,
+      lineWidth: CanvasLogic.lineWidth,
+      strokeStyle: CanvasLogic.lineColor,
+    }
+    console.log(CanvasLogic.linesSteps);
+    // CanvasLogic.linesSteps[CanvasLogic.linesSteps.length - 1].lineWidth = CanvasLogic.lineWidth;
+    // CanvasLogic.linesSteps[CanvasLogic.linesSteps.length - 1].strokeStyle = CanvasLogic.lineColor;
+    CanvasLogic.linesSteps.push(step);
+    console.log(CanvasLogic.linesSteps);
   }
 
   static changeLineSize() {
@@ -214,19 +231,6 @@ export class CanvasLogic {
       link.click();
     }
   }
-  // ! test stuff
-  static copyCurrentState(): string {
-    const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
-    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-    const data = context.getImageData(0, 0, canvas.width, canvas.height);
-    console.log(data, 'original');
-    const stringifued = JSON.stringify(data.data);
-    console.log(stringifued, 'strigified');
-    const parsed = JSON.parse(stringifued);
-    console.log(parsed, 'parsed');
-    return stringifued
-  }
 
   static pasteOtherPainting() {
     const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
@@ -235,15 +239,8 @@ export class CanvasLogic {
     const lastPoint = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1];
     console.log(lastPoint);
     setInterval(() => {
-
-      // context.beginPath();
-      const lastPoint = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1]
-      // const preLastPoint = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 2]
-      // const previousX = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1].x
-      // const previousy = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1].y
-
-      // context.moveTo(preLastPoint.x, preLastPoint.y)
-      context.beginPath()
+      const lastPoint = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1];
+      context.beginPath();
       const xx = lastPoint.x
       const yy = lastPoint.y
       context.lineWidth = 6;
@@ -252,40 +249,46 @@ export class CanvasLogic {
       context.lineJoin = 'round';
       context.lineTo(xx, yy);
       context.stroke();
-      context.closePath()
-
     }, 0)
-
-    // context.putImageData(JSON.parse(data), 0, 0);
   }
 
-  saveToLocalStorage() {
-    const saveBtn = document.querySelector('.toolbar__save') as HTMLElement;
-    saveBtn.addEventListener('click', function save() {
-      const canvasState = CanvasLogic.copyCurrentState();
-      localStorage.setItem('canv', canvasState);
-    })
-  }
-
-  static testPasteFromLocalStorage() {
-    const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
+  static drowCopy() {
+    const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+    context.beginPath();
+    setInterval(function () {
 
-    console.log(context);
-    const pasteBtn = document.querySelector('.toolbar__info') as HTMLElement;
-    pasteBtn.addEventListener('click', function paste() {
-      const canvasState = JSON.parse(localStorage.getItem('canv') as string) as ImageData;
-      console.log(canvasState);
-      context.putImageData(canvasState, 0, 0);
-    })
+      if (CanvasLogic.linesSteps.length > 1) {
+        const lastStep = CanvasLogic.linesSteps[CanvasLogic.linesSteps.length - 1] as CanvasStep;
+        console.log(lastStep);
+        context.lineWidth = lastStep.lineWidth ?? 0;
+        context.strokeStyle = lastStep.strokeStyle ?? 'red';
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.moveTo(lastStep.coords[0].x, lastStep.coords[0].y);
+
+        lastStep.coords.forEach((elem) => {
+          context.lineTo(elem.x, elem.y);
+          // context.stroke();
+        })
+
+        // context.lineTo(xx, yy);
+
+      }
+      context.stroke();
+    }, 2000)
+
   }
+
 
   render() {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
-    // CanvasLogic.pasteOtherPainting()
-    // CanvasLogic.saveToLocalStorage();
-    // CanvasLogic.testPasteFromLocalStorage();
+    // this.removeDrawRights()
+    // CanvasLogic.pasteOtherPainting();
+
+    CanvasLogic.drowCopy()
+
   }
 }

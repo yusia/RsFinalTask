@@ -8,11 +8,13 @@ export class RoomController implements ControllerInterface {
   constructor(private viewInstance: RoomView, private userService: UsersService, private messangerService: MessangerService) { }
 
   initView(): void {
+
     this.viewInstance.render({ users: this.userService.getUsers() });
     const canvasLogic = new CanvasLogic;
     canvasLogic.render();
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
+
 
   }
 }
