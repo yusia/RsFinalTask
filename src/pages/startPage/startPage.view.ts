@@ -8,7 +8,7 @@ export class StartPageView {
     this.user = new UserModel('', '');
   }
 
-  render(model: { user: UserModel, onPlay: (newUser: UserModel) => void }) {
+  render(model: { user: UserModel; onPlay: (newUser: UserModel) => void }) {
     this.user = model.user;
     const frag = document.createDocumentFragment();
     frag.append(Page.createContent(content));
@@ -26,7 +26,7 @@ export class StartPageView {
     const input = doc.getElementById('user-name') as HTMLInputElement;
     input.addEventListener('change', () => {
       this.user.name = this.getUserName(); //todo get from e.target
-    })
+    });
     input.value = this.user.name;
   }
 
@@ -41,7 +41,7 @@ export class StartPageView {
     galery.innerHTML = '';
     avatarsIds.forEach((avatarId) => {
       galery.append(this.buildImage(avatarId));
-    })
+    });
   }
 
   buildImage(avatarId: number): HTMLImageElement {
@@ -59,7 +59,6 @@ export class StartPageView {
     avatar.src = `../images/${this.user.avatar}.png`;
   }
 
-
   addStartListener(doc: DocumentFragment, onStartPlay: (newUser: UserModel) => void) {
     doc.getElementById('start-btn')?.addEventListener('click', (e) => {
       e.preventDefault();
@@ -68,12 +67,10 @@ export class StartPageView {
     });
   }
 
-
   goToRoom() {
     history.pushState({ title: 'Your game' }, 'newUrl', '/room');
     window.dispatchEvent(new Event('stateChange'));
   }
-
 
   addGaleryListener(doc: DocumentFragment) {
     const bigImage = doc.getElementById('selected-avatar') as HTMLImageElement;
@@ -81,9 +78,10 @@ export class StartPageView {
       const img = e.target as HTMLImageElement;
       if (img.src !== undefined) {
         bigImage.src = img.src;
-        if (img.dataset.id) { this.user.avatar = img.dataset.id; }
+        if (img.dataset.id) {
+          this.user.avatar = img.dataset.id;
+        }
       }
     });
   }
-
 }
