@@ -2,6 +2,7 @@ import { ChatElements } from '../interfaces/messenger.elements';
 import { messageI } from '../interfaces/messageI';
 import { isHTMLElem } from '../helpFunctions/HTMLElements';
 import { ConnectionService } from './connection.service';
+import { UserModel } from '../models';
 
 export class MessangerService {
   static HTMLElements: ChatElements;
@@ -23,7 +24,6 @@ export class MessangerService {
   }
   runSockets() {
     const chat = MessangerService.HTMLElements.chat;
-    console.log(this.socket());
     const messangerBody = MessangerService.HTMLElements.messageBody;
 
     this.socket()?.emit('findAllMessages', {}, (response: messageI[]) => {
@@ -52,7 +52,6 @@ export class MessangerService {
     this.socket()?.on('removeMessage', (messageArr: messageI[] | -1) => {
       if (messageArr === -1) return;
       this.messages.splice(0, this.messages.length + 1, ...messageArr);
-      console.log(this.messages);
 
       chat.innerHTML = '';
       this.messages.forEach((message) => this.addMessageTochat(chat, message));
@@ -61,8 +60,8 @@ export class MessangerService {
     });
   }
 
-  newClientF(name: string) {
-    this.socket()?.emit('join', { name: name }, () => {
+  async newClientF(user: UserModel) {
+    this.socket()?.emit('join', user, () => {
       this.newClient = true;
       return this.newClient;
     });
@@ -155,6 +154,5 @@ export class MessangerService {
 
   getHTMLElements(elements: ChatElements): void {
     MessangerService.HTMLElements = elements;
-    console.log(MessangerService.HTMLElements);
   }
 }

@@ -1,11 +1,11 @@
-import { UserModel } from "../models/user.model";
+import { UserModel } from '../models/user.model';
 
 export class UsersService {
-  userKey = "usersettings";
+  userKey = 'usersettings';
   private currentUser: UserModel | undefined;
 
-  getUsers(): string[] {
-    return ['user1', 'user2', 'user3']
+  getUsers(): UserModel[] {
+    return [];
   }
 
   saveUserSettings(user: UserModel) {

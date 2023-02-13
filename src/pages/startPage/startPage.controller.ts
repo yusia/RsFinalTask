@@ -4,12 +4,12 @@ import { ConnectionService, MessangerService, UsersService } from '../../service
 import { UserModel } from '../../models/user.model';
 
 export class StartPageController implements ControllerInterface {
-  constructor(private viewInstance: StartPageView,
+  constructor(
+    private viewInstance: StartPageView,
     private userService: UsersService,
     private connectionService: ConnectionService,
-    private messangerService: MessangerService) {
-
-  }
+    private messangerService: MessangerService
+  ) {}
 
   initView(): void {
     const tempUser = this.userService.getTempUser();
@@ -18,9 +18,10 @@ export class StartPageController implements ControllerInterface {
 
   startGame(user: UserModel) {
     this.saveUserSettings(user);
-    this.connectionService.openConnection();
+    this.connectionService.openConnection(user);
+
     //todo join user
-    this.messangerService.newClientF(user.name);
+    this.messangerService.newClientF(user);
   }
 
   saveUserSettings(user: UserModel) {
