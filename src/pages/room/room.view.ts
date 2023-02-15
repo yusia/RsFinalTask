@@ -3,6 +3,17 @@ import { UsersComponent } from '../../components/user/userComponent';
 import { Page, UserModel } from '../../models';
 
 export class RoomView {
+
+  setTimer(tick: number) {
+    const elem = document.getElementById('timer') as HTMLDivElement;
+    elem.innerHTML = tick.toString();
+  }
+
+  setRound(round: number) {
+    const elem = document.getElementById('round-container') as HTMLDivElement;
+    elem.innerHTML = round.toString();
+  }
+
   render() {
     const frag = this.createTemplateFromHTML(content);
 
@@ -31,7 +42,6 @@ export class RoomView {
   renderNewPlayer(Users: UserModel[]) {
     const body = document.getElementById('users-container') as HTMLElement;
     body.innerHTML = '';
-    console.log(body);
 
     const UserComponent = new UsersComponent(Users);
 
