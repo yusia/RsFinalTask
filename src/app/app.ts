@@ -46,9 +46,10 @@ export default class App {
     // temp open connection on login
     //todo move only registration on server
   }
+
   onUnload() {
     document.addEventListener('unload', () => {
-      this.connectionService.connection?.emit('userLogout', { user: this.usersService.getCurrentUser() });
-    })
+      this.connectionService.connection?.emit('usersLeaved');
+    });
   }
 }
