@@ -3,36 +3,18 @@ export * from './room.view';
 
 import { CanvasStep } from './../../interfaces/canvas-logic';
 export class CanvasLogic {
-  public isDrawing: boolean;
+  static isDrawing: boolean;
   static context: CanvasRenderingContext2D | undefined;
   static canvas: HTMLCanvasElement | undefined;
   static drawProgresion: ImageData[];
-  static drawProgresionIndex: number;
-  // static lineColor = '#fcd3fd';
   static lineColor = '#acd3ed';
-  static lineWidth = 10;
-  startX: number;
-  startY: number;
-  // !test
-  static XNYList: { x: number, y: number }[] = [{ x: 0, y: 0 }];
+  static lineWidth = 7;
 
-  static oneLineCoords: [{ x: number, y: number }] = [{ x: 0, y: 0 }];
-  static linesSteps: CanvasStep[] = [{
-    coords: [
-      {
-        x: 0,
-        y: 0
-      }
-    ],
-    lineWidth: 0,
-    strokeStyle: 'red',
-  }];
+  static oneLineCoords: { x: number, y: number }[] = [];
+  static linesSteps: CanvasStep[] = [];
 
   constructor() {
-    this.isDrawing = false;
-    this.startX = 2;
-    this.startY = 2;
-    CanvasLogic.drawProgresionIndex = -1;
+    CanvasLogic.isDrawing = false;
   }
 
   setupCanvas(): { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D } {
@@ -59,8 +41,13 @@ export class CanvasLogic {
 
   giveDrawRights() {
     if (CanvasLogic.canvas) {
+      const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
+      toolbar.style.display = ''
+
       const clearBtn = document.querySelector('.toolbar__clear') as HTMLElement;
-      clearBtn.addEventListener('click', CanvasLogic.clearCanvas);
+      clearBtn.addEventListener('click', function outerClear() {
+        CanvasLogic.clearCanvas()
+      });
 
       const undoBtn = document.querySelector('.toolbar__undo') as HTMLElement;
       undoBtn.addEventListener('click', this.undoLast);
@@ -74,55 +61,41 @@ export class CanvasLogic {
       const downloadBtn = document.querySelector('.toolbar__download') as HTMLElement;
       downloadBtn.addEventListener('click', this.downloadPainting);
 
-      CanvasLogic.canvas.addEventListener('mousedown', this.startDraw);
-      CanvasLogic.canvas.addEventListener('mousemove', this.draw);
-      CanvasLogic.canvas.addEventListener('mouseup', this.endDraw);
-      CanvasLogic.canvas.addEventListener('mouseout', this.endDraw);
-      CanvasLogic.canvas.addEventListener("touchstart", this.startDraw);
-      CanvasLogic.canvas.addEventListener("touchmove", this.draw);
-      CanvasLogic.canvas.addEventListener("touchend", this.endDraw);
-      CanvasLogic.canvas.addEventListener("touchcancel", this.endDraw);
+      CanvasLogic.canvas.addEventListener('mousedown', CanvasLogic.startDraw);
+      CanvasLogic.canvas.addEventListener('mousemove', CanvasLogic.draw);
+      CanvasLogic.canvas.addEventListener('mouseup', CanvasLogic.endDraw);
+      CanvasLogic.canvas.addEventListener('mouseout', CanvasLogic.endDraw);
+      CanvasLogic.canvas.addEventListener("touchstart", CanvasLogic.startDraw);
+      CanvasLogic.canvas.addEventListener("touchmove", CanvasLogic.draw);
+      CanvasLogic.canvas.addEventListener("touchend", CanvasLogic.endDraw);
+      CanvasLogic.canvas.addEventListener("touchcancel", CanvasLogic.endDraw);
     }
   }
 
-  removeDrawRights() {
+  static removeDrawRights() {
     if (CanvasLogic.canvas) {
-      CanvasLogic.canvas.removeEventListener('mousedown', this.startDraw);
-      CanvasLogic.canvas.removeEventListener('mousemove', this.draw);
-      CanvasLogic.canvas.removeEventListener('mouseup', this.endDraw);
-      CanvasLogic.canvas.removeEventListener('mouseout', this.endDraw);
+      const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
+      toolbar.style.display = 'none'
+      CanvasLogic.canvas.removeEventListener('mousedown', CanvasLogic.startDraw);
+      CanvasLogic.canvas.removeEventListener('mousemove', CanvasLogic.draw);
+      CanvasLogic.canvas.removeEventListener('mouseup', CanvasLogic.endDraw);
+      CanvasLogic.canvas.removeEventListener('mouseout', CanvasLogic.endDraw);
 
-      CanvasLogic.canvas.removeEventListener("touchstart", this.startDraw);
-      CanvasLogic.canvas.removeEventListener("touchmove", this.draw);
-      CanvasLogic.canvas.removeEventListener("touchend", this.endDraw);
-      CanvasLogic.canvas.removeEventListener("touchcancel", this.endDraw);
+      CanvasLogic.canvas.removeEventListener("touchstart", CanvasLogic.startDraw);
+      CanvasLogic.canvas.removeEventListener("touchmove", CanvasLogic.draw);
+      CanvasLogic.canvas.removeEventListener("touchend", CanvasLogic.endDraw);
+      CanvasLogic.canvas.removeEventListener("touchcancel", CanvasLogic.endDraw);
     }
   }
 
-  startDraw(e: MouseEvent | TouchEvent) {
-    this.isDrawing = true;
-
-    // this.startX = (e as TouchEvent).changedTouches ?
-    //   (e as TouchEvent).changedTouches[0].clientX :
-    //   (e as MouseEvent).clientX;
-    // this.startY = (e as TouchEvent).changedTouches ?
-    //   (e as TouchEvent).changedTouches[0].clientY :
-    //   (e as MouseEvent).clientY;
-    if (CanvasLogic.canvas && CanvasLogic.context) {
-      // CanvasLogic.context.beginPath()
-      // const canvasOffsetX = CanvasLogic.canvas.offsetLeft;
-      // const canvasOffsetY = CanvasLogic.canvas.offsetTop;
-      // const pointerX = (e as MouseEvent).clientX - canvasOffsetX
-      // const pointerY = (e as MouseEvent).clientY - canvasOffsetY
-      // CanvasLogic.context.moveTo(pointerX, pointerY)
-      // CanvasLogic.context.beginPath();
-      // CanvasLogic.context.lineTo(this.startX, this.startY)
-    }
-    e.preventDefault();
+  static startDraw() {
+    CanvasLogic.isDrawing = true;
+    CanvasLogic.oneLineCoords = [];
   }
 
-  draw(e: MouseEvent | TouchEvent): { x: number, y: number } {
-    if (!this.isDrawing) {
+  static draw(e: MouseEvent | TouchEvent): { x: number, y: number } {
+
+    if (!CanvasLogic.isDrawing) {
       return {
         x: -1,
         y: -1
@@ -152,44 +125,35 @@ export class CanvasLogic {
         y: pointerY
       })
 
-      CanvasLogic.XNYList.push({ x: pointerX, y: pointerY });
-      // console.log(CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1]);
       return {
         x: pointerX,
         y: pointerY
       }
     }
     return {
-      x: 0,
-      y: 0
+      x: -1,
+      y: -1
     }
   }
 
-  endDraw(e: MouseEvent | TouchEvent) {
-    this.isDrawing = false;
+  static endDraw(e: MouseEvent | TouchEvent) {
+
+    CanvasLogic.isDrawing = false;
     if (CanvasLogic.context && CanvasLogic.canvas) {
+
       CanvasLogic.context.beginPath();
-      if (e.type !== 'mouseout') {
-        CanvasLogic.drawProgresionIndex++;
-        if (CanvasLogic.drawProgresion === undefined) {
-          CanvasLogic.drawProgresion = [];
-          CanvasLogic.drawProgresion[0] = CanvasLogic.context.getImageData(0, 0, CanvasLogic.canvas.width, CanvasLogic.canvas.height)
-        } else {
-          CanvasLogic.drawProgresion.push(CanvasLogic.context.getImageData(0, 0, CanvasLogic.canvas.width, CanvasLogic.canvas.height));
+
+      if (e.type !== 'mouseout' || (e as MouseEvent).buttons == 1) {
+        const step: CanvasStep = {
+          coords: CanvasLogic.oneLineCoords,
+          lineWidth: CanvasLogic.lineWidth,
+          strokeStyle: CanvasLogic.lineColor,
         }
+        CanvasLogic.linesSteps.push(step);
       }
     }
 
-    const step: CanvasStep = {
-      coords: CanvasLogic.oneLineCoords,
-      lineWidth: CanvasLogic.lineWidth,
-      strokeStyle: CanvasLogic.lineColor,
-    }
-    console.log(CanvasLogic.linesSteps);
-    // CanvasLogic.linesSteps[CanvasLogic.linesSteps.length - 1].lineWidth = CanvasLogic.lineWidth;
-    // CanvasLogic.linesSteps[CanvasLogic.linesSteps.length - 1].strokeStyle = CanvasLogic.lineColor;
-    CanvasLogic.linesSteps.push(step);
-    console.log(CanvasLogic.linesSteps);
+
   }
 
   static changeLineSize() {
@@ -202,24 +166,27 @@ export class CanvasLogic {
     CanvasLogic.lineColor = val.value;
   }
 
-  static clearCanvas() {
+  static clearCanvas(otherCanvas?: HTMLCanvasElement) {
+    if (otherCanvas) {
+      otherCanvas.getContext('2d')?.clearRect(0, 0, otherCanvas.width, otherCanvas.height);
+      return
+    }
     if (CanvasLogic.context && CanvasLogic.canvas) {
       CanvasLogic.context.clearRect(0, 0, CanvasLogic.canvas.width, CanvasLogic.canvas.height);
-      CanvasLogic.drawProgresionIndex = -1;
-      CanvasLogic.drawProgresion = [];
+      CanvasLogic.linesSteps = [];
     }
   }
 
   undoLast(): void {
     if (CanvasLogic.canvas && CanvasLogic.context) {
-      if (CanvasLogic.drawProgresion.length <= 1) {
+      if (CanvasLogic.linesSteps.length <= 1) {
         CanvasLogic.clearCanvas();
         return;
       }
-      CanvasLogic.drawProgresionIndex--;
-      CanvasLogic.drawProgresion.pop();
-      console.log(CanvasLogic.drawProgresion[CanvasLogic.drawProgresionIndex], 'work');
-      CanvasLogic.context.putImageData(CanvasLogic.drawProgresion[CanvasLogic.drawProgresionIndex], 0, 0);
+
+      CanvasLogic.linesSteps.pop();
+      CanvasLogic.context.clearRect(0, 0, CanvasLogic.canvas.width, CanvasLogic.canvas.height);
+      CanvasLogic.linesSteps.forEach(el => CanvasLogic.drawFromLinesSteps(CanvasLogic.canvas as HTMLCanvasElement, el))
     }
   }
 
@@ -232,52 +199,35 @@ export class CanvasLogic {
     }
   }
 
-  static pasteOtherPainting() {
-    const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
-    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  static drawFromLinesSteps(yourCanvas: HTMLCanvasElement, step: CanvasStep): void {
 
-    const lastPoint = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1];
-    console.log(lastPoint);
-    setInterval(() => {
-      const lastPoint = CanvasLogic.XNYList[CanvasLogic.XNYList.length - 1];
-      context.beginPath();
-      const xx = lastPoint.x
-      const yy = lastPoint.y
-      context.lineWidth = 6;
-      context.strokeStyle = 'red';
-      context.lineCap = 'round';
-      context.lineJoin = 'round';
-      context.lineTo(xx, yy);
-      context.stroke();
-    }, 0)
+    const context = yourCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+    context.lineWidth = step.lineWidth ?? 0;
+    context.strokeStyle = step.strokeStyle ?? 'red';
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+
+    context.beginPath();
+
+    step.coords.forEach((elem) => {
+      context.lineTo(elem.x, elem.y);
+    })
+    context.stroke();
+    context.beginPath();
   }
 
   static drowCopy() {
     const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-    context.beginPath();
-    setInterval(function () {
-
-      if (CanvasLogic.linesSteps.length > 1) {
-        const lastStep = CanvasLogic.linesSteps[CanvasLogic.linesSteps.length - 1] as CanvasStep;
-        console.log(lastStep);
-        context.lineWidth = lastStep.lineWidth ?? 0;
-        context.strokeStyle = lastStep.strokeStyle ?? 'red';
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        context.moveTo(lastStep.coords[0].x, lastStep.coords[0].y);
-
-        lastStep.coords.forEach((elem) => {
-          context.lineTo(elem.x, elem.y);
-          // context.stroke();
-        })
-
-        // context.lineTo(xx, yy);
-
+    setInterval(() => {
+      if (!CanvasLogic.linesSteps.length) {
+        CanvasLogic.clearCanvas(canvas);
       }
-      context.stroke();
-    }, 2000)
 
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      CanvasLogic.linesSteps.forEach(el => CanvasLogic.drawFromLinesSteps(canvas, el))
+    }, 500)
   }
 
 
@@ -285,8 +235,6 @@ export class CanvasLogic {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
-    // this.removeDrawRights()
-    // CanvasLogic.pasteOtherPainting();
 
     CanvasLogic.drowCopy()
 
