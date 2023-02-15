@@ -18,6 +18,7 @@ export default class App {
     this.messangerService = new MessangerService(this.connectionService);
     this.joinRoomService = new JoinRoomService(this.connectionService);
     this.view = new AppView();
+
   }
 
   start() {
@@ -44,5 +45,10 @@ export default class App {
   onLogin() {
     // temp open connection on login
     //todo move only registration on server
+  }
+  onUnload() {
+    document.addEventListener('unload', () => {
+      this.connectionService.connection?.emit('userLogout', { user: this.usersService.getCurrentUser() });
+    })
   }
 }
