@@ -42,7 +42,6 @@ export class RoomView {
   renderNewPlayer(Users: UserModel[]) {
     const body = document.getElementById('users-container') as HTMLElement;
     body.innerHTML = '';
-    console.log(body);
 
     const UserComponent = new UsersComponent(Users);
 

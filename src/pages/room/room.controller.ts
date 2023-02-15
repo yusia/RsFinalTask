@@ -1,9 +1,8 @@
 import ControllerInterface from '../../../src/interfaces/controller.interface';
 import { RoomView } from './room.view';
-import { MessangerService, UsersService } from '../../services';
+import { MessangerService, UsersService, ConnectionService } from '../../services';
 import { MessangerController } from '../../components/messanger/messanger.controller';
 import { MessangerView } from '../../components/messanger/messanger.view';
-import { JoinRoomService } from '../../services/joinRoom.service';
 import { UserModel } from '../../models';
 
 export class RoomController implements ControllerInterface {
@@ -12,7 +11,7 @@ export class RoomController implements ControllerInterface {
     private viewInstance: RoomView,
     private userService: UsersService,
     private messangerService: MessangerService,
-    private joinRoomService: JoinRoomService
+    private connectionService: ConnectionService
   ) {
     this.round = {
       number: 1,
@@ -27,7 +26,7 @@ export class RoomController implements ControllerInterface {
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
-    this.joinRoomService.joinToRoom(this.viewInstance.renderNewPlayer);
+    this.listenUserChangeEvents();
     this.listenRoundEvent();
     //todo into connection
   }
@@ -37,13 +36,13 @@ export class RoomController implements ControllerInterface {
   }
 
   listenRoundEvent() {
- 
-    this.joinRoomService.socket()?.on('roundStarted', (model: { round: number, lead: UserModel }) => {
+
+    this.connectionService.connection?.on('roundStarted', (model: { round: number, lead: UserModel }) => {
       console.log(model);
       this.initRound(model.round);
     });
 
-    this.joinRoomService.socket()?.on('roundFinished', (model: { round: number, lead: UserModel }) => {
+    this.connectionService.connection?.on('roundFinished', (model: { round: number, lead: UserModel }) => {
       console.log(model);
 
       this.initRound(model.round);
@@ -74,5 +73,15 @@ export class RoomController implements ControllerInterface {
     clearInterval(this.round.intervalId);
     clearTimeout(this.round.timerId);
   }
-  
+
+
+  listenUserChangeEvents() {
+    this.connectionService.connection?.on('usersLeaved', (response: { users: UserModel[] }) => {
+      this.viewInstance.renderNewPlayer(response.users);
+    });
+
+    this.connectionService.connection?.on('join', (message) => {
+      this.viewInstance.renderNewPlayer(message);
+    });
+  }
 }

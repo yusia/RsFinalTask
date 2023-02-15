@@ -5,6 +5,7 @@ export class JoinRoomService {
   socket() {
     return this.connectionService.connection;
   }
+  
   joinToRoom(renderNewPlayer: (User: UserModel[]) => void) {
     this.socket()?.on('join', (message) => {
       renderNewPlayer(message);

@@ -18,7 +18,7 @@ export default class App {
     this.messangerService = new MessangerService(this.connectionService);
     this.joinRoomService = new JoinRoomService(this.connectionService);
     this.view = new AppView();
-
+    this.onUnload();
   }
 
   start() {
@@ -31,7 +31,7 @@ export default class App {
       ),
       new Route(
         'room',
-        new RoomController(new RoomView(), this.usersService, this.messangerService, this.joinRoomService)
+        new RoomController(new RoomView(), this.usersService, this.messangerService, this.connectionService)
       ),
     ]);
     router.init();
@@ -48,8 +48,20 @@ export default class App {
   }
 
   onUnload() {
-    document.addEventListener('unload', () => {
-      this.connectionService.connection?.emit('usersLeaved');
+    window.addEventListener('beforeunload', (event) => {
+      if (this.connectionService.isConnectionOpen()) {
+         event.preventDefault();
+         event.stopImmediatePropagation();
+        event.returnValue ='Would you like to leave the game?';
+        return 'Would you like to leave the game?';
+      }
     });
+    window.addEventListener('unload', (event) => {
+      if (this.connectionService.isConnectionOpen()) {
+        this.connectionService.connection?.emit('usersLeaved');
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    })
   }
 }
