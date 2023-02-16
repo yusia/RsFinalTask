@@ -6,7 +6,7 @@ import { MessangerView } from '../../components/messanger/messanger.view';
 import { UserModel } from '../../models';
 
 export class RoomController implements ControllerInterface {
-  round: { number: number, intervalId: NodeJS.Timer | undefined, timerId: NodeJS.Timeout | undefined }
+  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined };
   constructor(
     private viewInstance: RoomView,
     private userService: UsersService,
@@ -17,7 +17,7 @@ export class RoomController implements ControllerInterface {
       number: 1,
       intervalId: undefined,
       timerId: undefined,
-    }
+    };
   }
 
   initView(): void {
@@ -32,23 +32,31 @@ export class RoomController implements ControllerInterface {
   }
   onRoundStop() {
     this.resetTimer();
-    alert("Time is over");
+    alert('Time is over');
   }
 
   listenRoundEvent() {
+    this.connectionService.connection?.on(
+      'roundStarted',
+      (model: { round: number; currentLead: UserModel; allPlayers: UserModel[] }) => {
+        console.log(model.currentLead);
+        console.log(model.round);
+        this.viewInstance.renderNewPlayer(model.allPlayers, model.currentLead);
 
-    this.connectionService.connection?.on('roundStarted', (model: { round: number, lead: UserModel }) => {
-      console.log(model);
+
+        this.initRound(model.round);
+      }
+    );
+
+    this.connectionService.connection?.on('roundFinished', (model: { round: number; currentLead: UserModel }) => {
+      console.log(8888);
+
       this.initRound(model.round);
-    });
 
-    this.connectionService.connection?.on('roundFinished', (model: { round: number, lead: UserModel }) => {
-      console.log(model);
+      this.connectionService.connection?.emit('roundStarted');
 
-      this.initRound(model.round);
       this.onRoundStop();
     });
-
   }
 
   //for next turn restart timer
@@ -56,6 +64,7 @@ export class RoomController implements ControllerInterface {
 
   initRound(round: number) {
     let startTime = 90;
+    console.log(`raund` + round);
 
     this.round.intervalId = setInterval(() => {
       this.viewInstance.setTimer(startTime);
@@ -73,7 +82,6 @@ export class RoomController implements ControllerInterface {
     clearInterval(this.round.intervalId);
     clearTimeout(this.round.timerId);
   }
-
 
   listenUserChangeEvents() {
     this.connectionService.connection?.on('usersLeaved', (response: { users: UserModel[] }) => {

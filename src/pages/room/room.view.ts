@@ -3,7 +3,6 @@ import { UsersComponent } from '../../components/user/userComponent';
 import { Page, UserModel } from '../../models';
 
 export class RoomView {
-
   setTimer(tick: number) {
     const elem = document.getElementById('timer') as HTMLDivElement;
     elem.innerHTML = tick.toString();
@@ -39,12 +38,11 @@ export class RoomView {
     return frag;
   }
 
-  renderNewPlayer(Users: UserModel[]) {
+  renderNewPlayer(Users: UserModel[], lead?: UserModel) {
     const body = document.getElementById('users-container') as HTMLElement;
     body.innerHTML = '';
 
     const UserComponent = new UsersComponent(Users);
-
-    body.append(UserComponent.getComponent());
+    lead ? body.append(UserComponent.getComponent(lead)) : body.append(UserComponent.getComponent());
   }
 }
