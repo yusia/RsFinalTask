@@ -36,7 +36,7 @@ export class RoomController implements ControllerInterface {
 
   listenRoundEvent() {
 
-    this.connectionService.connection?.on('roundStarted', (model: { round: number, lead: UserModel }) => {
+    this.connectionService.connection?.on('turnStarted', (model: { round: number, lead: UserModel }) => {
       console.log(model);
       this.initRound(model.round);
     });
