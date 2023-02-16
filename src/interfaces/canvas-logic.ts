@@ -3,8 +3,7 @@ export interface CanvasStep {
   coords: {
     x: number,
     y: number
-  }[
-  ],
+  }[],
   //? и этим
   //? coords: [{
   //?   x: number,

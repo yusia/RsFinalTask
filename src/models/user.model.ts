@@ -1,5 +1,5 @@
 export class UserModel {
-  id: number;
+  id: number | string;
   currentScore: number;
 
   constructor(public name: string, public avatar: string) {

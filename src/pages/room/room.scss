@@ -123,3 +123,19 @@
   border-radius: 10px;
   width: 100%;
 }
+.timer-count {
+  color: $contrast-color;
+  font-size: 1.3rem;
+}
+
+.timer-container,
+.round-container {
+  display: flex;
+  gap: 15px;
+}
+.round-container {
+  color: $friend-color;
+}
+.thumb-timer {
+  height: 30px;
+}

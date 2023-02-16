@@ -17,7 +17,7 @@ const config = {
   devServer: {
     open: true,
     host: "localhost",
-    port: 4200,
+    port: 8080,
     hot: isProduction,
     historyApiFallback: true,
     static: {
