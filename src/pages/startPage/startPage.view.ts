@@ -63,14 +63,9 @@ export class StartPageView {
     doc.getElementById('start-btn')?.addEventListener('click', (e) => {
       e.preventDefault();
       onStartPlay(this.user);
-      this.goToRoom();
     });
   }
 
-  goToRoom() {
-    history.pushState({ title: 'Your game' }, 'newUrl', '/room');
-    window.dispatchEvent(new Event('stateChange'));
-  }
 
   addGaleryListener(doc: DocumentFragment) {
     const bigImage = doc.getElementById('selected-avatar') as HTMLImageElement;

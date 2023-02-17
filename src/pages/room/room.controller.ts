@@ -4,6 +4,7 @@ import { MessangerService, UsersService, ConnectionService } from '../../service
 import { MessangerController } from '../../components/messanger/messanger.controller';
 import { MessangerView } from '../../components/messanger/messanger.view';
 import { UserModel } from '../../models';
+import { ResultsModal } from '../../components/modals/results.modal';
 
 export class RoomController implements ControllerInterface {
   round: { number: number, intervalId: NodeJS.Timer | undefined, timerId: NodeJS.Timeout | undefined }
@@ -21,18 +22,23 @@ export class RoomController implements ControllerInterface {
   }
 
   initView(): void {
-    this.viewInstance.render();
-    //this.viewInstance.render();
+    if (this.connectionService.isConnectionOpen()) {
+      this.renderView();
+    } else {
+      this.redirectToHomePage()
+    }
+  }
 
+  renderView() {
+    this.viewInstance.render();
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
     this.listenUserChangeEvents();
     this.listenRoundEvent();
-    //todo into connection
   }
+  
   onRoundStop() {
     this.resetTimer();
-    alert("Time is over");
   }
 
   listenRoundEvent() {
@@ -42,17 +48,13 @@ export class RoomController implements ControllerInterface {
       this.initRound(model.round);
     });
 
-    this.connectionService.connection?.on('roundFinished', (model: { round: number, lead: UserModel }) => {
-      console.log(model);
-
-      this.initRound(model.round);
+    this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
+      const modal = new ResultsModal();
+      modal.showModal(model.users);
       this.onRoundStop();
     });
 
   }
-
-  //for next turn restart timer
-  //for next round change round number and restart timer
 
   initRound(round: number) {
     let startTime = 90;
@@ -84,4 +86,10 @@ export class RoomController implements ControllerInterface {
       this.viewInstance.renderNewPlayer(message);
     });
   }
+
+  redirectToHomePage() {
+    history.pushState({ title: 'Home' }, 'newUrl', '/');
+    window.dispatchEvent(new Event('stateChange'));
+  }
+
 }
