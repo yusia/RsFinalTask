@@ -10,6 +10,6 @@ export interface CanvasStep {
   //?   y: number
   //? }
   //? ],
-  lineWidth?: number,
-  strokeStyle?: string | CanvasGradient | CanvasPattern,
+  lineWidth: number,
+  strokeStyle: string | CanvasGradient | CanvasPattern,
 }

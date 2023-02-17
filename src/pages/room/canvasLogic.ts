@@ -18,8 +18,14 @@ export class CanvasLogic {
   constructor(private service: ConnectionService) {
     this.connectionService = service;
     CanvasLogic.isDrawing = false;
-  }
 
+    this.connectionService.connection?.on('canvasDataChanged', (data: CanvasStep[]) => {
+      // console.log(model);
+      this.drowCopy2(data);
+      // this.initRound(model.round);
+
+    });
+  }
 
   setupCanvas(): { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D } {
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
@@ -67,7 +73,7 @@ export class CanvasLogic {
 
       CanvasLogic.canvas.addEventListener('mousedown', CanvasLogic.startDraw);
       CanvasLogic.canvas.addEventListener('mousemove', CanvasLogic.draw);
-      CanvasLogic.canvas.addEventListener('mouseup', this.endDraw);
+      CanvasLogic.canvas.addEventListener('mouseup', this.endDraw.bind(this));
       CanvasLogic.canvas.addEventListener('mouseout', this.endDraw);
       CanvasLogic.canvas.addEventListener("touchstart", CanvasLogic.startDraw);
       CanvasLogic.canvas.addEventListener("touchmove", CanvasLogic.draw);
@@ -123,7 +129,6 @@ export class CanvasLogic {
       CanvasLogic.context.lineTo(pointerX, pointerY);
       CanvasLogic.context.stroke();
 
-      //!!! массив точек линии
       CanvasLogic.oneLineCoords.push({
         x: pointerX,
         y: pointerY
@@ -153,8 +158,6 @@ export class CanvasLogic {
           strokeStyle: CanvasLogic.lineColor,
         }
         CanvasLogic.linesSteps.push(step);
-        console.log('мы тута');
-        console.log(this.connectionService);
         this.connectionService.connection?.emit('canvasShare', CanvasLogic.linesSteps);
       }
     }
@@ -234,13 +237,24 @@ export class CanvasLogic {
     }, 500)
   }
 
+  drowCopy2(array: CanvasStep[]) {
+    const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    if (!CanvasLogic.linesSteps.length) {
+      CanvasLogic.clearCanvas(canvas);
+    }
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    array.forEach(el => CanvasLogic.drawFromLinesSteps(canvas, el))
+  }
 
   render() {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
 
-    CanvasLogic.drowCopy()
+    // CanvasLogic.drowCopy()
 
   }
 }

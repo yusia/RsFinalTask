@@ -27,13 +27,12 @@ export class RoomController implements ControllerInterface {
   initView(): void {
     this.viewInstance.render();
     //this.viewInstance.render();
-
     this.viewInstance.render();
-    setTimeout(() => {
+
       const canvasLogic = new CanvasLogic(this.connectionService);
       canvasLogic.render();
       console.log(this.connectionService);
-    }, 3500);
+    
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
