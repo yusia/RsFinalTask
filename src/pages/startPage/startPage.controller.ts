@@ -16,12 +16,16 @@ export class StartPageController implements ControllerInterface {
     this.viewInstance.render({ user: tempUser, onPlay: this.startGame.bind(this) });
   }
 
-  startGame(user: UserModel) {
+  async startGame(user: UserModel) {
+    await this.connectionService.openConnection(user);
     this.saveUserSettings(user);
-    this.connectionService.openConnection(user);
-
-    //todo join user
     this.messangerService.newClientF(user);
+    this.goToRoomPage();
+  }
+
+  goToRoomPage() {
+    history.pushState({ title: 'Your game' }, 'newUrl', '/room');
+    window.dispatchEvent(new Event('stateChange'));
   }
 
   saveUserSettings(user: UserModel) {

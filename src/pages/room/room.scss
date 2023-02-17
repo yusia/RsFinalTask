@@ -139,3 +139,18 @@
 .thumb-timer {
   height: 30px;
 }
+
+.current-score{
+  color: $friend-color;
+  size: 1.5rem;
+  border-radius: 5px;
+  border: 1px solid $contrast-color;
+}
+.roundResultsContent{
+  background-color: $background-color;
+}
+
+.roundResultsDialog {
+  box-shadow: 10px 0px 34px 7px $contrast-color, -8px 12px 45px 9px $friend-color;
+  color: $contrast-color;
+}

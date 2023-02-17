@@ -16,18 +16,9 @@ export class RoomView {
 
   render() {
     const frag = this.createTemplateFromHTML(content);
-
-    //this.addUsers(frag, model.users);
-
     Page.appendToPage(frag);
 
   }
-
-  //addUsers(fragment: DocumentFragment, users: UserModel[]) {
-  //  const userList = fragment.getElementById('users-container');
-  //  const UserComponent = new UsersComponent(users);
-  //  userList?.append(UserComponent.getComponent());
-  //}
 
   createTemplateFromHTML(content: string): DocumentFragment {
     const div = document.createElement('div');
@@ -48,4 +39,6 @@ export class RoomView {
 
     body.append(UserComponent.getComponent());
   }
+
+
 }

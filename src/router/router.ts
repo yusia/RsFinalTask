@@ -8,7 +8,6 @@ export class Router {
 
   init() {
     this.routeChanged();
-
   }
 
   getRouteInstance(path: string): ControllerInterface | undefined {
