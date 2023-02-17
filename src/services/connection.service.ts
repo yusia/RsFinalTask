@@ -4,16 +4,23 @@ import { UserModel } from '../models/user.model';
 
 export class ConnectionService {
   connection: Socket | undefined;
-  constructor(private url = Constants.serverUrl) {}
+  constructor(private url = Constants.serverUrl) { }
 
   async openConnection(user: UserModel) {
     this.connection = io(this.url);
-    this.connection.on('connect', () => {
-      user.id = this.connection?.id as string;
+    return this.listenConnection(user); 
+  }
+
+  async listenConnection(user: UserModel) {
+    return new Promise((resolve) => {
+      this.connection?.on('connect', () => {
+        user.id = this.connection?.id as string;
+        resolve(user.id);
+      });
     });
   }
 
   isConnectionOpen() {
-    return !!this.openConnection;
+    return this.connection?.connected;
   }
 }

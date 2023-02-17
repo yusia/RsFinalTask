@@ -22,14 +22,21 @@ export class RoomController implements ControllerInterface {
   }
 
   initView(): void {
-    this.viewInstance.render();
+    if (this.connectionService.isConnectionOpen()) {
+      this.renderView();
+    } else {
+      this.redirectToHomePage()
+    }
+  }
 
+  renderView() {
+    this.viewInstance.render();
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
     this.listenUserChangeEvents();
     this.listenRoundEvent();
   }
-
+  
   onRoundStop() {
     this.resetTimer();
   }
@@ -79,4 +86,10 @@ export class RoomController implements ControllerInterface {
       this.viewInstance.renderNewPlayer(message);
     });
   }
+
+  redirectToHomePage() {
+    history.pushState({ title: 'Home' }, 'newUrl', '/');
+    window.dispatchEvent(new Event('stateChange'));
+  }
+
 }
