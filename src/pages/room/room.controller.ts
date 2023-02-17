@@ -5,9 +5,12 @@ import { MessangerController } from '../../components/messanger/messanger.contro
 import { MessangerView } from '../../components/messanger/messanger.view';
 import { UserModel } from '../../models';
 import { ResultsModal } from '../../components/modals/results.modal';
+import { ChooseWord } from '../../components/modals/chooseWord.modal';
 
 export class RoomController implements ControllerInterface {
-  round: { number: number, intervalId: NodeJS.Timer | undefined, timerId: NodeJS.Timeout | undefined }
+  userId: string;
+  LeadId: string;
+  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined };
   constructor(
     private viewInstance: RoomView,
     private userService: UsersService,
@@ -18,14 +21,27 @@ export class RoomController implements ControllerInterface {
       number: 1,
       intervalId: undefined,
       timerId: undefined,
-    }
+    };
+    this.LeadId = '-1';
+    this.userId = '';
+    this.addEventListners();
+  }
+
+  addEventListners() {
+    window.addEventListener('chooseWord', ((event: CustomEvent) => {
+      const word: string = event.detail.word;
+      this.sendWordToServer(word);
+    }) as EventListener);
+  }
+  sendWordToServer(word: string) {
+    this.connectionService.connection?.emit('wordIsChosen', word);
   }
 
   initView(): void {
     if (this.connectionService.isConnectionOpen()) {
       this.renderView();
     } else {
-      this.redirectToHomePage()
+      this.redirectToHomePage();
     }
   }
 
@@ -36,26 +52,35 @@ export class RoomController implements ControllerInterface {
     this.listenUserChangeEvents();
     this.listenRoundEvent();
   }
-  
+
   onRoundStop() {
     this.resetTimer();
   }
 
   listenRoundEvent() {
-
-    this.connectionService.connection?.on('roundStarted', (model: { round: number, lead: UserModel }) => {
-      console.log(model);
-      this.initRound(model.round);
+    this.connectionService.connection?.on('chooseWordForRound', (Words: string[]) => {
+      const modal = new ChooseWord();
+      modal.showModal(Words);
     });
+
+    this.connectionService.connection?.on(
+      'roundStarted',
+      (model: { round: number; lead: UserModel; allPlayers: UserModel[]; word: string }) => {
+        this.LeadId = model.lead.id as string;
+
+        this.initRound(model.round);
+      }
+    );
 
     this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
       const modal = new ResultsModal();
       modal.showModal(model.users);
       this.onRoundStop();
     });
-
   }
-
+  isThisUserLead() {
+    return this.userId === this.LeadId;
+  }
   initRound(round: number) {
     let startTime = 90;
 
@@ -76,10 +101,13 @@ export class RoomController implements ControllerInterface {
     clearTimeout(this.round.timerId);
   }
 
-
   listenUserChangeEvents() {
     this.connectionService.connection?.on('usersLeaved', (response: { users: UserModel[] }) => {
       this.viewInstance.renderNewPlayer(response.users);
+    });
+
+    this.connectionService.connection?.on('userId', (id: string) => {
+      this.userId = id;
     });
 
     this.connectionService.connection?.on('join', (message) => {
@@ -91,5 +119,4 @@ export class RoomController implements ControllerInterface {
     history.pushState({ title: 'Home' }, 'newUrl', '/');
     window.dispatchEvent(new Event('stateChange'));
   }
-
 }

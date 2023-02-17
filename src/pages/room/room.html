@@ -1,7 +1,7 @@
 <section id="main" class="container">
   <div class="d-flex">
     <div id="timer-container" class="timer-container">
-      <img src="../../../assets/package-lock.png" class="thumb-timer">
+      <img src="../../../assets/package-lock.png" class="thumb-timer" />
       <div id="timer" class="timer-count">90</div>
     </div>
     <div id="round-container" class="round-container">
@@ -10,20 +10,24 @@
       <span>/ 3</span>
     </div>
   </div>
-  <div class="room-flex ">
-    <div id="users-container">
-    </div>
-    <div class="canvas "> canvas placeholder</div>
-    <div class="chat" id="chat"> chat</div>
+  <div class="room-flex">
+    <div id="users-container"></div>
+    <div class="canvas">canvas placeholder</div>
+    <div class="chat" id="chat">chat</div>
   </div>
 
-  <div class="modal fade " id="roundResultsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-hidden="true">
+  <div
+    class="modal fade"
+    id="roundResultsModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-hidden="true"
+  >
     <div class="modal-dialog roundResultsDialog">
       <div class="modal-content roundResultsContent">
         <div class="modal-body">
-          <div class="user-img-container" id="roundResults">
-          </div>
+          <div class="user-img-container" id="roundResults"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="next-round-btn">Next round</button>
@@ -31,3 +35,23 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade"
+    id="chooseWordModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog chooseWordDialog">
+      <div class="modal-content chooseWordContent">
+
+        <div class="modal-container" id="chooseWordBody"></div>
+        <!--<div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="chooseWord-button">Next round</button>
+        </div>-->
+      </div>
+    </div>
+  </div>
+</section>
