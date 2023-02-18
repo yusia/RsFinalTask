@@ -30,7 +30,7 @@ export class CanvasLogic {
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     CanvasLogic.canvas = canvas;
     CanvasLogic.context = context;
-    window.addEventListener('resize', this.resize);
+    window.addEventListener('resize', this.resize.bind(this));
     return {
       canvas: CanvasLogic.canvas,
       context: CanvasLogic.context,
@@ -38,17 +38,38 @@ export class CanvasLogic {
   }
 
   resize() {
-    if (CanvasLogic.context && CanvasLogic.canvas) {
-      // ! раскомменть и убери второй канвас с html, когда будет все готово
-      // const canvasOuter = document.querySelector('.canvas-outer') as Element;
-      // const canvasOuterWidth = window.getComputedStyle(canvasOuter).width.slice(0, -2);
-      // CanvasLogic.context.canvas.width = Math.floor(+canvasOuterWidth);
-      // CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
-    }
+    // console.log(this);
+    setTimeout(() => {
+      this.setupCanvas();
+
+      // console.log('we resizing now');
+      if (CanvasLogic.context && CanvasLogic.canvas) {
+
+        // ! раскомменть и убери второй канвас с html, когда будет все готово
+        const canvasHtml = document.querySelector('.canvas') as Element;
+        const canvasHtmlWidth = window.getComputedStyle(canvasHtml).width.slice(0, -2);
+        console.log(Math.floor(+canvasHtmlWidth));
+        CanvasLogic.context.canvas.width = Math.floor(+canvasHtmlWidth);
+        CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
+      }
+    }, 500)
+
   }
+  // !
+  switchWiev() {
+    const othersCanvas = document.querySelector('.canvas-others') as HTMLElement;
+    othersCanvas.classList.toggle('show');
+  }
+  // !
 
   giveDrawRights() {
     if (CanvasLogic.canvas) {
+
+      // !test
+      const switchBtn = document.querySelector('.toolbar__save') as HTMLElement;
+      switchBtn.addEventListener('click', this.switchWiev);
+      // !
+
       const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
       toolbar.style.display = '';
 
@@ -67,7 +88,7 @@ export class CanvasLogic {
       const downloadBtn = document.querySelector('.toolbar__download') as HTMLElement;
       downloadBtn.addEventListener('click', this.downloadPainting);
 
-      CanvasLogic.canvas.addEventListener('mousedown', this.startDraw.bind(this));
+      CanvasLogic.canvas.addEventListener('mousedown', this.startDraw);
       CanvasLogic.canvas.addEventListener('mousemove', this.draw.bind(this));
       CanvasLogic.canvas.addEventListener('mouseup', this.endDraw.bind(this));
       CanvasLogic.canvas.addEventListener('mouseout', this.endDraw.bind(this));
@@ -78,6 +99,12 @@ export class CanvasLogic {
     }
   }
 
+  removeDrawRights2() {
+    if (CanvasLogic.canvas) {
+      const copy = document.getElementById('.canvas-inner') as HTMLCanvasElement;
+      CanvasLogic.canvas.replaceWith(copy.cloneNode(true));
+    }
+  }
   removeDrawRights() {
     if (CanvasLogic.canvas) {
       const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
@@ -112,6 +139,7 @@ export class CanvasLogic {
     }
 
     if (CanvasLogic.canvas && CanvasLogic.context) {
+
       const canvasOffsetX = CanvasLogic.canvas.offsetLeft;
       const canvasOffsetY = CanvasLogic.canvas.offsetTop;
       CanvasLogic.context.lineWidth = CanvasLogic.lineWidth;
@@ -256,6 +284,7 @@ export class CanvasLogic {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
+    this.removeDrawRights();
 
     // CanvasLogic.drowCopy()
   }
