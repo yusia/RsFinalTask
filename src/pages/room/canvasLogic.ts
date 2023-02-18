@@ -60,7 +60,7 @@ export class CanvasLogic {
       });
 
       const undoBtn = document.querySelector('.toolbar__undo') as HTMLElement;
-      undoBtn.addEventListener('click', this.undoLast);
+      undoBtn.addEventListener('click', this.undoLast.bind(this));
 
       const lineSizeBtn = document.querySelector('.toolbar__line-width') as HTMLInputElement;
       lineSizeBtn.addEventListener('input', CanvasLogic.changeLineSize);
@@ -157,7 +157,9 @@ export class CanvasLogic {
           lineWidth: CanvasLogic.lineWidth,
           strokeStyle: CanvasLogic.lineColor,
         }
-        CanvasLogic.linesSteps.push(step);
+
+        if (step.coords.length) CanvasLogic.linesSteps.push(step);
+
         this.connectionService.connection?.emit('canvasShare', CanvasLogic.linesSteps);
       }
     }
@@ -188,12 +190,13 @@ export class CanvasLogic {
     if (CanvasLogic.canvas && CanvasLogic.context) {
       if (CanvasLogic.linesSteps.length <= 1) {
         CanvasLogic.clearCanvas();
-        return;
+        // return;
       }
 
       CanvasLogic.linesSteps.pop();
       CanvasLogic.context.clearRect(0, 0, CanvasLogic.canvas.width, CanvasLogic.canvas.height);
-      CanvasLogic.linesSteps.forEach(el => CanvasLogic.drawFromLinesSteps(CanvasLogic.canvas as HTMLCanvasElement, el))
+      CanvasLogic.linesSteps.forEach(el => CanvasLogic.drawFromLinesSteps(CanvasLogic.canvas as HTMLCanvasElement, el));
+      this.connectionService.connection?.emit('canvasShare', CanvasLogic.linesSteps);
     }
   }
 
@@ -241,7 +244,7 @@ export class CanvasLogic {
     const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-    if (!CanvasLogic.linesSteps.length) {
+    if (!array.length) {
       CanvasLogic.clearCanvas(canvas);
     }
 
