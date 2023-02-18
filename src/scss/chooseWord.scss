@@ -1,0 +1,33 @@
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+  background-color: $background-color;
+  border-radius: 7px;
+  color: $friend-color;
+  font-size: 32px;
+}
+
+.choose-word-container {
+  padding: 0;
+  margin: auto auto;
+  gap: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.choose-word-for-game {
+  margin: 0 10%;
+  text-align: center;
+  font-size: 20px;
+  display: block;
+  border: 3px solid black;
+  padding: 3px;
+  border-radius: 3px;
+  background-color: $friend-color;
+  color: $background-color;
+  border-radius: 5px;
+  cursor: pointer;
+}
