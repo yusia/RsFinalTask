@@ -133,9 +133,12 @@
   display: flex;
   gap: 15px;
 }
-.round-container {
+.info-bar {
+  display: flex;
+  justify-content: space-around;
   color: $friend-color;
 }
+
 .thumb-timer {
   height: 30px;
 }
@@ -153,4 +156,11 @@
 .roundResultsDialog {
   box-shadow: 10px 0px 34px 7px $contrast-color, -8px 12px 45px 9px $friend-color;
   color: $contrast-color;
+}
+
+.selected-word{
+  size: 1.5rem;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 1px 0px 3px 2px $contrast-color, -1px 1px 4px 2px $friend-color;
 }
