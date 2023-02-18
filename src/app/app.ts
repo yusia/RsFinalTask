@@ -5,6 +5,7 @@ import { UsersService, MessangerService, ConnectionService, JoinRoomService } fr
 import { StartPageView, StartPageController } from '../pages/startPage';
 import { AppView } from './app.view';
 
+// const canv = new Canvas()
 export default class App {
   usersService: UsersService;
   connectionService: ConnectionService;

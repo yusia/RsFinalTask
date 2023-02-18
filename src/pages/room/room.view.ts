@@ -17,6 +17,7 @@ export class RoomView {
   render() {
     const frag = this.createTemplateFromHTML(content);
     Page.appendToPage(frag);
+
   }
 
   createTemplateFromHTML(content: string): DocumentFragment {

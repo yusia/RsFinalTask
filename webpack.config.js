@@ -16,8 +16,14 @@ const config = {
   },
   devServer: {
     open: true,
-    host: 'localhost',
+    host: "localhost",
+    port: 8080,
+    hot: isProduction,
     historyApiFallback: true,
+    static: {
+      directory: path.join(__dirname, './'),
+      serveIndex: isProduction,
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
