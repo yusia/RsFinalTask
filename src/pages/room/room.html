@@ -10,10 +10,26 @@
       <span>/ 3</span>
     </div>
   </div>
-  <div class="room-flex">
-    <div id="users-container"></div>
-    <div class="canvas">canvas placeholder</div>
-    <div class="chat" id="chat">chat</div>
+  <div class="room-flex ">
+    <div id="users-container">
+    </div>
+    <div class="canvas">
+      <div class="canvas-outer">
+        <canvas class="canvas-inner" width="250" height="250"></canvas>
+        <canvas class="canvas-inner" width="250" height="250"></canvas>
+      </div>
+      <div class="toolbar__body">
+        <div class="toolbar__tools">
+          <input type="color" class="toolbar__color-all" id="color-input" value="#563d7c" title="Choose your color">
+          <input type="range" class="toolbar__line-width" min="1" max="71" step="5" value="11" id="line-width">
+          <div class="toolbar__clear t-button"></div>
+          <div class="toolbar__undo t-button"></div>
+          <div class="toolbar__save t-button"></div>
+          <div class="toolbar__download t-button"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chat" id="chat"> chat</div>
   </div>
 
   <div

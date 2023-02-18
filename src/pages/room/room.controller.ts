@@ -3,6 +3,9 @@ import { RoomView } from './room.view';
 import { MessangerService, UsersService, ConnectionService } from '../../services';
 import { MessangerController } from '../../components/messanger/messanger.controller';
 import { MessangerView } from '../../components/messanger/messanger.view';
+
+import { CanvasLogic } from './canvasLogic';
+
 import { UserModel } from '../../models';
 import { ResultsModal } from '../../components/modals/results.modal';
 import { ChooseWord } from '../../components/modals/chooseWord.modal';
@@ -15,7 +18,7 @@ export class RoomController implements ControllerInterface {
     private viewInstance: RoomView,
     private userService: UsersService,
     private messangerService: MessangerService,
-    private connectionService: ConnectionService
+    public connectionService: ConnectionService
   ) {
     this.round = {
       number: 1,
@@ -47,6 +50,11 @@ export class RoomController implements ControllerInterface {
 
   renderView() {
     this.viewInstance.render();
+      const canvasLogic = new CanvasLogic(this.connectionService);
+      canvasLogic.render();
+      console.log(this.connectionService);
+    
+
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
     this.listenUserChangeEvents();
