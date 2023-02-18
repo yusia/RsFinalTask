@@ -50,10 +50,9 @@ export class RoomController implements ControllerInterface {
 
   renderView() {
     this.viewInstance.render();
-      const canvasLogic = new CanvasLogic(this.connectionService);
-      canvasLogic.render();
-      console.log(this.connectionService);
-    
+    const canvasLogic = new CanvasLogic(this.connectionService, this.isThisUserLead.bind(this));
+    canvasLogic.render();
+    console.log(this.connectionService);
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
