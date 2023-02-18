@@ -3,7 +3,7 @@ import { ConnectionService } from '../../services';
 // import { MessangerService, UsersService, ConnectionService } from '../../services';
 
 export class CanvasLogic {
-  static isDrawing: boolean;
+  isDrawing = false;
   static context: CanvasRenderingContext2D | undefined;
   static canvas: HTMLCanvasElement | undefined;
   static drawProgresion: ImageData[];
@@ -17,13 +17,10 @@ export class CanvasLogic {
 
   constructor(private service: ConnectionService) {
     this.connectionService = service;
-    CanvasLogic.isDrawing = false;
+    this.isDrawing = false;
 
     this.connectionService.connection?.on('canvasDataChanged', (data: CanvasStep[]) => {
-      // console.log(model);
       this.drowCopy2(data);
-      // this.initRound(model.round);
-
     });
   }
 
@@ -55,9 +52,7 @@ export class CanvasLogic {
       toolbar.style.display = ''
 
       const clearBtn = document.querySelector('.toolbar__clear') as HTMLElement;
-      clearBtn.addEventListener('click', function outerClear() {
-        CanvasLogic.clearCanvas()
-      });
+      clearBtn.addEventListener('click', () => this.clearCanvas());
 
       const undoBtn = document.querySelector('.toolbar__undo') as HTMLElement;
       undoBtn.addEventListener('click', this.undoLast.bind(this));
@@ -71,14 +66,14 @@ export class CanvasLogic {
       const downloadBtn = document.querySelector('.toolbar__download') as HTMLElement;
       downloadBtn.addEventListener('click', this.downloadPainting);
 
-      CanvasLogic.canvas.addEventListener('mousedown', CanvasLogic.startDraw);
-      CanvasLogic.canvas.addEventListener('mousemove', CanvasLogic.draw);
+      CanvasLogic.canvas.addEventListener('mousedown', this.startDraw.bind(this));
+      CanvasLogic.canvas.addEventListener('mousemove', this.draw.bind(this));
       CanvasLogic.canvas.addEventListener('mouseup', this.endDraw.bind(this));
-      CanvasLogic.canvas.addEventListener('mouseout', this.endDraw);
-      CanvasLogic.canvas.addEventListener("touchstart", CanvasLogic.startDraw);
-      CanvasLogic.canvas.addEventListener("touchmove", CanvasLogic.draw);
-      CanvasLogic.canvas.addEventListener("touchend", this.endDraw);
-      CanvasLogic.canvas.addEventListener("touchcancel", this.endDraw);
+      CanvasLogic.canvas.addEventListener('mouseout', this.endDraw.bind(this));
+      CanvasLogic.canvas.addEventListener("touchstart", this.startDraw.bind(this));
+      CanvasLogic.canvas.addEventListener("touchmove", this.draw.bind(this));
+      CanvasLogic.canvas.addEventListener("touchend", this.endDraw.bind(this));
+      CanvasLogic.canvas.addEventListener("touchcancel", this.endDraw.bind(this));
     }
   }
 
@@ -86,33 +81,37 @@ export class CanvasLogic {
     if (CanvasLogic.canvas) {
       const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
       toolbar.style.display = 'none'
-      CanvasLogic.canvas.removeEventListener('mousedown', CanvasLogic.startDraw);
-      CanvasLogic.canvas.removeEventListener('mousemove', CanvasLogic.draw);
+      CanvasLogic.canvas.removeEventListener('mousedown', this.startDraw);
+      CanvasLogic.canvas.removeEventListener('mousemove', this.draw);
       CanvasLogic.canvas.removeEventListener('mouseup', this.endDraw);
       CanvasLogic.canvas.removeEventListener('mouseout', this.endDraw);
 
-      CanvasLogic.canvas.removeEventListener("touchstart", CanvasLogic.startDraw);
-      CanvasLogic.canvas.removeEventListener("touchmove", CanvasLogic.draw);
+      CanvasLogic.canvas.removeEventListener("touchstart", this.startDraw);
+      CanvasLogic.canvas.removeEventListener("touchmove", this.draw);
       CanvasLogic.canvas.removeEventListener("touchend", this.endDraw);
       CanvasLogic.canvas.removeEventListener("touchcancel", this.endDraw);
     }
   }
 
-  static startDraw() {
-    CanvasLogic.isDrawing = true;
+  startDraw() {
+    this.isDrawing = true;
+    if (CanvasLogic.context && CanvasLogic.canvas) {
+      CanvasLogic.context.beginPath();
+    }
     CanvasLogic.oneLineCoords = [];
   }
 
-  static draw(e: MouseEvent | TouchEvent): { x: number, y: number } {
+  draw(e: MouseEvent | TouchEvent): { x?: number, y?: number } {
+    if (!this.isDrawing) {
 
-    if (!CanvasLogic.isDrawing) {
       return {
-        x: -1,
-        y: -1
+        x: 0,
+        y: 0
       }
     }
 
     if (CanvasLogic.canvas && CanvasLogic.context) {
+
       const canvasOffsetX = CanvasLogic.canvas.offsetLeft;
       const canvasOffsetY = CanvasLogic.canvas.offsetTop;
       CanvasLogic.context.lineWidth = CanvasLogic.lineWidth;
@@ -146,7 +145,7 @@ export class CanvasLogic {
   }
 
   endDraw(e: MouseEvent | TouchEvent) {
-    CanvasLogic.isDrawing = false;
+    this.isDrawing = false;
     if (CanvasLogic.context && CanvasLogic.canvas) {
 
       CanvasLogic.context.beginPath();
@@ -162,7 +161,9 @@ export class CanvasLogic {
 
         this.connectionService.connection?.emit('canvasShare', CanvasLogic.linesSteps);
       }
+      CanvasLogic.context.beginPath();
     }
+
   }
 
   static changeLineSize() {
@@ -175,7 +176,7 @@ export class CanvasLogic {
     CanvasLogic.lineColor = val.value;
   }
 
-  static clearCanvas(otherCanvas?: HTMLCanvasElement) {
+  clearCanvas(otherCanvas?: HTMLCanvasElement) {
     if (otherCanvas) {
       otherCanvas.getContext('2d')?.clearRect(0, 0, otherCanvas.width, otherCanvas.height);
       return
@@ -184,12 +185,13 @@ export class CanvasLogic {
       CanvasLogic.context.clearRect(0, 0, CanvasLogic.canvas.width, CanvasLogic.canvas.height);
       CanvasLogic.linesSteps = [];
     }
+    this.connectionService.connection?.emit('canvasShare', CanvasLogic.linesSteps);
   }
 
   undoLast(): void {
     if (CanvasLogic.canvas && CanvasLogic.context) {
       if (CanvasLogic.linesSteps.length <= 1) {
-        CanvasLogic.clearCanvas();
+        this.clearCanvas();
         // return;
       }
 
@@ -227,12 +229,12 @@ export class CanvasLogic {
     context.beginPath();
   }
 
-  static drowCopy() {
+  drowCopy() {
     const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     setInterval(() => {
       if (!CanvasLogic.linesSteps.length) {
-        CanvasLogic.clearCanvas(canvas);
+        this.clearCanvas(canvas);
       }
 
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -245,7 +247,7 @@ export class CanvasLogic {
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     if (!array.length) {
-      CanvasLogic.clearCanvas(canvas);
+      this.clearCanvas(canvas);
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
