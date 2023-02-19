@@ -61,4 +61,32 @@ export class RoomView {
     elem.append(input);
     return input;
   }
+  rerenderWordContainer(isWordTrue: boolean) {
+    console.log(isWordTrue);
+
+    if (isWordTrue) {
+      const elem = document.getElementById('send-word-container') as HTMLElement;
+      elem.innerHTML = '';
+    }
+    const text = this.renderTextForWord(isWordTrue);
+    if (isWordTrue) text.classList.add('winner-text')
+  }
+
+  renderTextForWord(isWordTrue: boolean) {
+    let textContent = '';
+    isWordTrue ? (textContent = 'You guessed the words!!!') : (textContent = 'That is not the right word');
+    const elem = document.getElementById('send-word-container') as HTMLElement;
+    const textContained = document.getElementById('is-word-true');
+    if (textContained) {
+      textContained.textContent = textContent;
+      return textContained;
+    } else {
+      const text = document.createElement('p');
+      text.classList.add('is-word-true');
+      text.id = 'is-word-true';
+      text.textContent = textContent;
+      elem.append(text);
+      return text;
+    }
+  }
 }

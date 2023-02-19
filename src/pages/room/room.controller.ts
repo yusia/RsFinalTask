@@ -85,6 +85,10 @@ export class RoomController implements ControllerInterface {
       }
     });
 
+    this.connectionService.connection?.on('wordForWin', (isWordTrue: boolean) => {
+      this.viewInstance.rerenderWordContainer(isWordTrue);
+    });
+
     this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
       const modal = new ResultsModal();
       modal.showModal(this.round.word, model.users);
@@ -199,7 +203,7 @@ export class RoomController implements ControllerInterface {
 
   sendWordForWin(e: KeyboardEvent | Event, input: HTMLInputElement) {
     if (e instanceof KeyboardEvent && e.code === 'Enter') {
-      this.connectionService.connection?.emit('wordForWin', { text: input.value });
+      this.connectionService.connection?.emit('wordForWin', input.value);
       input.value = '';
     }
   }
