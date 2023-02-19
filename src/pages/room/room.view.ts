@@ -69,7 +69,7 @@ export class RoomView {
       elem.innerHTML = '';
     }
     const text = this.renderTextForWord(isWordTrue);
-    if (isWordTrue) text.classList.add('winner-text')
+    if (isWordTrue) text.classList.add('winner-text');
   }
 
   renderTextForWord(isWordTrue: boolean) {
@@ -88,5 +88,19 @@ export class RoomView {
       elem.append(text);
       return text;
     }
+  }
+
+  renderButtonToStartGame(playersCount: number) {
+    const body = document.getElementById('button-to-start-game-container') as HTMLElement;
+    body.innerHTML = ` <p class="text-to-start-game" >The number of players: ${playersCount}</p>`;
+    const button = document.createElement('button');
+    button.classList.add('btn', 'btn-outline-success', 'my-2', 'my-lg-0', 'start-btn', 'button-to-start-game');
+    button.textContent = 'Start';
+    body.append(button);
+    return button;
+  }
+  deleteButtonToStartGame() {
+    const body = document.getElementById('button-to-start-game-container') as HTMLElement;
+    body.innerHTML = '';
   }
 }

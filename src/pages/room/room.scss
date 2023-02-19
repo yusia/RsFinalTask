@@ -189,3 +189,23 @@
   font-size: 24px;
   font-weight: 800;
 }
+
+.button-to-start-game-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.text-to-start-game {
+  color: $friend-color;
+  font-size: 18px;
+  line-height: 18px;
+  margin: 10px 0 5px 0;
+}
+.button-to-start-game {
+  margin: 0;
+  width: 80%;
+  font-size: 18px;
+  margin-bottom: 5px;
+}

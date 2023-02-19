@@ -194,6 +194,17 @@ export class RoomController implements ControllerInterface {
     this.connectionService.connection?.on('join', (message) => {
       this.viewInstance.renderNewPlayer(message);
     });
+
+    this.connectionService.connection?.on('startTheGame', (playersCount: number) => {
+      const button = this.viewInstance.renderButtonToStartGame(playersCount);
+      button.addEventListener('click', this.startTheGame.bind(this));
+    });
+  }
+
+  startTheGame() {
+    this.connectionService.connection?.emit('startTheGame');
+    this.viewInstance.deleteButtonToStartGame();
+    //
   }
 
   redirectToHomePage() {
