@@ -16,7 +16,6 @@ export class RoomView {
   render() {
     const frag = this.createTemplateFromHTML(content);
     Page.appendToPage(frag);
-
   }
 
   createTemplateFromHTML(content: string): DocumentFragment {
@@ -39,7 +38,6 @@ export class RoomView {
     body.append(UserComponent.getComponent());
   }
 
-
   drawWord(word: string) {
     const elem = document.getElementById('selected-word') as HTMLElement;
     elem.innerText = word;
@@ -50,5 +48,17 @@ export class RoomView {
     elem.innerHTML = ` <span>Sketch</span>
     <span class="selected-word" id="selected-word">${word}
     </span>`;
+  }
+  buildSendWordContainer(isLead: () => boolean) {
+    const elem = document.getElementById('send-word-container') as HTMLElement;
+    console.log(elem);
+
+    elem.innerHTML = '';
+    if (isLead()) return;
+    elem.innerHTML = `<p class="send-word-text" >Send word</p>`;
+    const input = document.createElement('input');
+    input.classList.add('send-word-input');
+    elem.append(input);
+    return input;
   }
 }

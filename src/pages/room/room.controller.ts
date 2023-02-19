@@ -14,7 +14,7 @@ import { Constants } from '../../contants';
 export class RoomController implements ControllerInterface {
   userId: string;
   LeadId: string;
-  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined, word: string };
+  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined; word: string };
   constructor(
     private viewInstance: RoomView,
     private userService: UsersService,
@@ -25,7 +25,7 @@ export class RoomController implements ControllerInterface {
       number: 1,
       intervalId: undefined,
       timerId: undefined,
-      word: ''
+      word: '',
     };
     this.LeadId = '-1';
     this.userId = '';
@@ -77,8 +77,13 @@ export class RoomController implements ControllerInterface {
       this.LeadId = model.lead.id as string;
       this.initRound(model);
       this.round.word = model.word;
-    }
-    );
+      const input = this.viewInstance.buildSendWordContainer(this.isThisUserLead.bind(this));
+      if (input) {
+        input.addEventListener('keydown', (e) => {
+          this.sendWordForWin(e, input);
+        });
+      }
+    });
 
     this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
       const modal = new ResultsModal();
@@ -96,7 +101,10 @@ export class RoomController implements ControllerInterface {
     const wordHidden = !this.isThisUserLead();
     this.showWord(wordHidden, model.word);
 
-    let word = model.word.split('').map(() => '_').join('');
+    let word = model.word
+      .split('')
+      .map(() => '_')
+      .join('');
     this.round.intervalId = setInterval(() => {
       this.viewInstance.setTimer(startTime);
       if (wordHidden) {
@@ -123,22 +131,23 @@ export class RoomController implements ControllerInterface {
         const i = word.length - 1;
         return this.getTipAndDraw(i, word, initWord);
       }
-      case 40:
-        {
+      case 40: {
+        console.log(word, initWord);
+        const i = Math.round(word.length / 2);
+        return this.getTipAndDraw(i, word, initWord);
+      }
+      case 30:
+        if (word.length > 6) {
           console.log(word, initWord);
-          const i = Math.round(word.length / 2);
+          const i = Math.round(word.length / 2) - 1;
           return this.getTipAndDraw(i, word, initWord);
         }
-      case 30: if (word.length > 6) {
-        console.log(word, initWord);
-        const i = Math.round(word.length / 2) - 1;
-        return this.getTipAndDraw(i, word, initWord);
-      }
         break;
-      case 10: if (word.length > 3) {
-        const i = 0;
-        return this.getTipAndDraw(i, word, initWord);
-      }
+      case 10:
+        if (word.length > 3) {
+          const i = 0;
+          return this.getTipAndDraw(i, word, initWord);
+        }
         break;
     }
 
@@ -146,7 +155,7 @@ export class RoomController implements ControllerInterface {
   }
 
   getTipAndDraw(i: number, word: string, initWord: string) {
-    const letters = word.split('').map((l, index) => i === index ? initWord.split('')[index] : l);
+    const letters = word.split('').map((l, index) => (i === index ? initWord.split('')[index] : l));
     const fillWord = letters.join('');
     const text = letters.join(' ');
     this.viewInstance.drawWord(text);
@@ -154,7 +163,12 @@ export class RoomController implements ControllerInterface {
   }
 
   showWord(wordHidden: boolean, word: string) {
-    const text = wordHidden ? word.split('').map(() => '_').join(' ') : word;
+    const text = wordHidden
+      ? word
+          .split('')
+          .map(() => '_')
+          .join(' ')
+      : word;
     this.viewInstance.buildWordContainer(text);
     //  this.viewInstance.drawWord(text);
   }
@@ -181,5 +195,12 @@ export class RoomController implements ControllerInterface {
   redirectToHomePage() {
     history.pushState({ title: 'Home' }, 'newUrl', '/');
     window.dispatchEvent(new Event('stateChange'));
+  }
+
+  sendWordForWin(e: KeyboardEvent | Event, input: HTMLInputElement) {
+    if (e instanceof KeyboardEvent && e.code === 'Enter') {
+      this.connectionService.connection?.emit('wordForWin', { text: input.value });
+      input.value = '';
+    }
   }
 }
