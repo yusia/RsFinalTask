@@ -3,18 +3,19 @@ import { UserModel } from '../../models';
 
 export class ResultsModal {
   private modal!: Modal;
-  showModal(users: UserModel[]) {
-    this.createModal(users);
+  showModal(word: string, users: UserModel[]) {
+    this.createModal(word, users);
     this.modal = new Modal('#roundResultsModal');
     this.modal.show();
   }
 
-  private createModal(users: UserModel[]) {
+  private createModal(word: string, users: UserModel[]) {
     const modalResults = document.getElementById('roundResults') as HTMLElement;
     modalResults.innerHTML = '';
-    let result = '';
+    let result = `<div class="result-word">Word was ${word}</div>`;
     users.forEach((user) => {
-      result += `<div class="d-flex justify-content-between">
+      result += `
+                  <div class="d-flex justify-content-between">
                     <div> 
                       <img src="../images/${user.avatar}.png" class="thumb" /><span>${user.name}</span>
                     </div> 

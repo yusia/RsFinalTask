@@ -3,7 +3,6 @@ import { UsersComponent } from '../../components/user/userComponent';
 import { Page, UserModel } from '../../models';
 
 export class RoomView {
-
   setTimer(tick: number) {
     const elem = document.getElementById('timer') as HTMLDivElement;
     elem.innerHTML = tick.toString();
@@ -41,4 +40,15 @@ export class RoomView {
   }
 
 
+  drawWord(word: string) {
+    const elem = document.getElementById('selected-word') as HTMLElement;
+    elem.innerText = word;
+  }
+
+  buildWordContainer(word = '') {
+    const elem = document.getElementById('word-container') as HTMLElement;
+    elem.innerHTML = ` <span>Sketch</span>
+    <span class="selected-word" id="selected-word">${word}
+    </span>`;
+  }
 }

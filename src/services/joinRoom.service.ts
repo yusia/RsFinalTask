@@ -9,7 +9,6 @@ export class JoinRoomService {
   joinToRoom(renderNewPlayer: (User: UserModel[]) => void) {
     this.socket()?.on('join', (message) => {
       renderNewPlayer(message);
-      // console.log(`${message} присоединился к игре`);
     });
   }
 }
