@@ -14,7 +14,7 @@ import { Constants } from '../../contants';
 export class RoomController implements ControllerInterface {
   userId: string;
   LeadId: string;
-  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined };
+  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined, word: string };
   constructor(
     private viewInstance: RoomView,
     private userService: UsersService,
@@ -25,6 +25,7 @@ export class RoomController implements ControllerInterface {
       number: 1,
       intervalId: undefined,
       timerId: undefined,
+      word: ''
     };
     this.LeadId = '-1';
     this.userId = '';
@@ -75,12 +76,13 @@ export class RoomController implements ControllerInterface {
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
       this.LeadId = model.lead.id as string;
       this.initRound(model);
+      this.round.word = model.word;
     }
     );
 
     this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
       const modal = new ResultsModal();
-      modal.showModal(model.users);
+      modal.showModal(this.round.word, model.users);
       this.onRoundStop();
     });
   }
@@ -153,7 +155,8 @@ export class RoomController implements ControllerInterface {
 
   showWord(wordHidden: boolean, word: string) {
     const text = wordHidden ? word.split('').map(() => '_').join(' ') : word;
-    this.viewInstance.drawWord(text);
+    this.viewInstance.buildWordContainer(text);
+    //  this.viewInstance.drawWord(text);
   }
 
   resetTimer() {
