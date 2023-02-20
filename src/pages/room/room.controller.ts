@@ -14,6 +14,7 @@ import { Constants } from '../../contants';
 export class RoomController implements ControllerInterface {
   userId: string;
   LeadId: string;
+  resultsModal: ResultsModal;
   round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined; word: string };
   constructor(
     private viewInstance: RoomView,
@@ -30,12 +31,17 @@ export class RoomController implements ControllerInterface {
     this.LeadId = '-1';
     this.userId = '';
     this.addEventListners();
+    this.resultsModal = new ResultsModal();
   }
 
   addEventListners() {
     window.addEventListener('chooseWord', ((event: CustomEvent) => {
       const word: string = event.detail.word;
       this.sendWordToServer(word);
+    }) as EventListener);
+
+    window.addEventListener('goNextRound', (() => {
+      this.connectionService.connection?.emit('playerReadyToStartNextRound');
     }) as EventListener);
   }
   sendWordToServer(word: string) {
@@ -89,9 +95,14 @@ export class RoomController implements ControllerInterface {
       this.viewInstance.rerenderWordContainer(isWordTrue);
     });
 
-    this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
-      const modal = new ResultsModal();
-      modal.showModal(this.round.word, model.users);
+    this.connectionService.connection?.on('playerReadyToStartNextRound', () => {
+      this.resultsModal.hideModal();
+    });
+
+    this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[]; lead: UserModel }) => {
+      this.LeadId = model.lead.id as string;
+      const isLead = this.isThisUserLead();
+      this.resultsModal.showModal(this.round.word, model.users, isLead);
       this.onRoundStop();
     });
   }
