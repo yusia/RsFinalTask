@@ -122,7 +122,7 @@ export class CanvasLogic {
   }
 
   startDraw() {
-    // if (!this.isThisUserLead()) return;
+    if (!this.isThisUserLead()) return;
     this.isDrawing = true;
     if (CanvasLogic.context && CanvasLogic.canvas) {
       CanvasLogic.context.beginPath();
