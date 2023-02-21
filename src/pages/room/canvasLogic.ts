@@ -122,7 +122,7 @@ export class CanvasLogic {
   }
 
   startDraw() {
-    if (!this.isThisUserLead()) return;
+    // if (!this.isThisUserLead()) return;
     this.isDrawing = true;
     if (CanvasLogic.context && CanvasLogic.canvas) {
       CanvasLogic.context.beginPath();
@@ -284,7 +284,7 @@ export class CanvasLogic {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
-    this.removeDrawRights();
+    // this.removeDrawRights();
 
     // CanvasLogic.drowCopy()
   }
