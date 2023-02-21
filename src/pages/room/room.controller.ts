@@ -14,6 +14,7 @@ import { Constants } from '../../contants';
 export class RoomController implements ControllerInterface {
   userId: string;
   LeadId: string;
+  resultsModal: ResultsModal;
   round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined; word: string };
   constructor(
     private viewInstance: RoomView,
@@ -30,12 +31,17 @@ export class RoomController implements ControllerInterface {
     this.LeadId = '-1';
     this.userId = '';
     this.addEventListners();
+    this.resultsModal = new ResultsModal();
   }
 
   addEventListners() {
     window.addEventListener('chooseWord', ((event: CustomEvent) => {
       const word: string = event.detail.word;
       this.sendWordToServer(word);
+    }) as EventListener);
+
+    window.addEventListener('goNextRound', (() => {
+      this.connectionService.connection?.emit('playerReadyToStartNextRound');
     }) as EventListener);
   }
   sendWordToServer(word: string) {
@@ -85,9 +91,18 @@ export class RoomController implements ControllerInterface {
       }
     });
 
-    this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[] }) => {
-      const modal = new ResultsModal();
-      modal.showModal(this.round.word, model.users);
+    this.connectionService.connection?.on('wordForWin', (isWordTrue: boolean) => {
+      this.viewInstance.rerenderWordContainer(isWordTrue);
+    });
+
+    this.connectionService.connection?.on('playerReadyToStartNextRound', () => {
+      this.resultsModal.hideModal();
+    });
+
+    this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[]; lead: UserModel }) => {
+      this.LeadId = model.lead.id as string;
+      const isLead = this.isThisUserLead();
+      this.resultsModal.showModal(this.round.word, model.users, isLead);
       this.onRoundStop();
     });
   }
@@ -190,6 +205,17 @@ export class RoomController implements ControllerInterface {
     this.connectionService.connection?.on('join', (message) => {
       this.viewInstance.renderNewPlayer(message);
     });
+
+    this.connectionService.connection?.on('startTheGame', (playersCount: number) => {
+      const button = this.viewInstance.renderButtonToStartGame(playersCount);
+      button.addEventListener('click', this.startTheGame.bind(this));
+    });
+  }
+
+  startTheGame() {
+    this.connectionService.connection?.emit('startTheGame');
+    this.viewInstance.deleteButtonToStartGame();
+    //
   }
 
   redirectToHomePage() {
@@ -199,7 +225,7 @@ export class RoomController implements ControllerInterface {
 
   sendWordForWin(e: KeyboardEvent | Event, input: HTMLInputElement) {
     if (e instanceof KeyboardEvent && e.code === 'Enter') {
-      this.connectionService.connection?.emit('wordForWin', { text: input.value });
+      this.connectionService.connection?.emit('wordForWin', input.value);
       input.value = '';
     }
   }
