@@ -75,7 +75,6 @@ export class RoomController implements ControllerInterface {
   listenRoundEvent() {
     this.connectionService.connection?.on('chooseWordForRound', (Words: string[]) => {
       const modal = new ChooseWord();
-      console.log('chooseWordForRound');
       modal.showModal(Words);
     });
 
@@ -141,18 +140,15 @@ export class RoomController implements ControllerInterface {
   showLetter(startTime: number, word: string, initWord: string): string {
     switch (startTime) {
       case 60: {
-        console.log(word, initWord);
         const i = word.length - 1;
         return this.getTipAndDraw(i, word, initWord);
       }
       case 40: {
-        console.log(word, initWord);
         const i = Math.round(word.length / 2);
         return this.getTipAndDraw(i, word, initWord);
       }
       case 30:
         if (word.length > 6) {
-          console.log(word, initWord);
           const i = Math.round(word.length / 2) - 1;
           return this.getTipAndDraw(i, word, initWord);
         }
@@ -184,7 +180,6 @@ export class RoomController implements ControllerInterface {
         .join(' ')
       : word;
     this.viewInstance.buildWordContainer(text);
-    //  this.viewInstance.drawWord(text);
   }
 
   resetTimer() {
