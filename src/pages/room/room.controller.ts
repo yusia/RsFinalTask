@@ -6,15 +6,14 @@ import { MessangerView } from '../../components/messanger/messanger.view';
 
 import { CanvasLogic } from './canvasLogic';
 
-import { UserModel, RoundModel } from '../../models';
+import { UserModel, RoundModel, RoundViewModel } from '../../models';
 import { ResultsModal } from '../../components/modals/results.modal';
 import { ChooseWord } from '../../components/modals/chooseWord.modal';
 import { Constants } from '../../contants';
 
 export class RoomController implements ControllerInterface {
-  LeadId: string;
   resultsModal: ResultsModal;
-  round: { number: number; intervalId: NodeJS.Timer | undefined; timerId: NodeJS.Timeout | undefined; word: string };
+  round: RoundViewModel;
 
   constructor(
     private viewInstance: RoomView,
@@ -22,13 +21,16 @@ export class RoomController implements ControllerInterface {
     private messangerService: MessangerService,
     public connectionService: ConnectionService
   ) {
+
     this.round = {
-      number: 1,
+      lead: new UserModel('',''),
+      round: 1,
       intervalId: undefined,
       timerId: undefined,
       word: '',
+      allPlayers: []
     };
-    this.LeadId = '-1';
+
     this.addEventListners();
     this.resultsModal = new ResultsModal();
   }
@@ -57,9 +59,8 @@ export class RoomController implements ControllerInterface {
 
   renderView() {
     this.viewInstance.render();
-    const canvasLogic = new CanvasLogic(this.connectionService, () => { return this.userService.isThisUserLead(this.LeadId); });
+    const canvasLogic = new CanvasLogic(this.connectionService, () => { return this.userService.isThisUserLead(this.round.lead.id); });
     canvasLogic.render();
-    console.log(this.connectionService);
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
@@ -79,11 +80,12 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
-      this.LeadId = model.lead.id.toString();
-      this.initRound(model);
-      this.round.number=model.round;
+      this.round.lead = model.lead;
+      this.round.round = model.round;
       this.round.word = model.word;
-      const input = this.viewInstance.buildSendWordContainer(this.userService.isThisUserLead(this.LeadId));
+      this.initRound(model);
+
+      const input = this.viewInstance.buildSendWordContainer(this.userService.isThisUserLead(this.round.lead.id));
       if (input) {
         input.addEventListener('keydown', (e) => {
           this.sendWordForWin(e, input);
@@ -100,8 +102,8 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[]; lead: UserModel }) => {
-      this.LeadId = model.lead.id as string;
-      const isLead = this.userService.isThisUserLead(this.LeadId);
+      this.round.lead.id = model.lead.id as string;
+      const isLead = this.userService.isThisUserLead(this.round.lead.id);
       this.resultsModal.showModal(this.round.word, model.users, isLead);
       this.onRoundStop();
     });
@@ -110,7 +112,7 @@ export class RoomController implements ControllerInterface {
 
   initRound(model: RoundModel) {
     let startTime = 90;
-    const wordHidden = !this.userService.isThisUserLead(this.LeadId);
+    const wordHidden = !this.userService.isThisUserLead(this.round.lead.id);
     this.showWord(wordHidden, model.word);
 
     let word = model.word
