@@ -14,8 +14,8 @@ export default class App {
   view: AppView;
 
   constructor() {
-    this.usersService = new UsersService();
     this.connectionService = new ConnectionService();
+    this.usersService = new UsersService(this.connectionService);
     this.messangerService = new MessangerService(this.connectionService);
     this.joinRoomService = new JoinRoomService(this.connectionService);
     this.view = new AppView();
@@ -51,9 +51,9 @@ export default class App {
   onUnload() {
     window.addEventListener('beforeunload', (event) => {
       if (this.connectionService.isConnectionOpen()) {
-         event.preventDefault();
-         event.stopImmediatePropagation();
-        event.returnValue ='Would you like to leave the game?';
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        event.returnValue = 'Would you like to leave the game?';
         return 'Would you like to leave the game?';
       }
     });
