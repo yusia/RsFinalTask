@@ -79,11 +79,11 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
-      this.LeadId = model.lead.id as string;
+      this.LeadId = model.lead.id.toString();
       this.initRound(model);
+      this.round.number=model.round;
       this.round.word = model.word;
-      //todo может просто boolean достаточно
-      const input = this.viewInstance.buildSendWordContainer(() => { return this.userService.isThisUserLead(this.LeadId); });
+      const input = this.viewInstance.buildSendWordContainer(this.userService.isThisUserLead(this.LeadId));
       if (input) {
         input.addEventListener('keydown', (e) => {
           this.sendWordForWin(e, input);
