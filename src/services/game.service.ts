@@ -32,9 +32,7 @@ export class GameService {
       .join('');
 
     this.round.intervalId = setInterval(() => {
-  
-        word = this.showLetter(startTime, word, model.word, onTimerChanged);
-      
+      word = this.showLetter(startTime, word, model.word, onTimerChanged);
       startTime--;
     }, 1000);
 
@@ -77,7 +75,7 @@ export class GameService {
   }
 
   getTipLetters(i: number, word: string, initWord: string): string[] {
-   return word.split('').map((l, index) => (i === index ? initWord.split('')[index] : l));
+    return word.split('').map((l, index) => (i === index ? initWord.split('')[index] : l));
   }
 
   setRoundTimer() {

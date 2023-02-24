@@ -65,7 +65,7 @@ export class RoomController implements ControllerInterface {
 
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
       this.gameService.initRound(model, this.onTimerChanged.bind(this));
-      
+
       this.showWord(model.word);
       this.viewInstance.setRound(model.round);
 
@@ -102,6 +102,7 @@ export class RoomController implements ControllerInterface {
       this.viewInstance.drawWord(text);
     }
   }
+
   showWord(word: string) {
     const wordHidden = !this.gameService.isThisUserLead();
     const text = wordHidden
@@ -113,12 +114,10 @@ export class RoomController implements ControllerInterface {
     this.viewInstance.buildWordContainer(text);
   }
 
-
   listenUserChangeEvents() {
     this.connectionService.connection?.on('usersLeaved', (response: { users: UserModel[] }) => {
       this.viewInstance.renderNewPlayer(response.users);
     });
-
 
     this.connectionService.connection?.on('join', (message) => {
       this.viewInstance.renderNewPlayer(message);
