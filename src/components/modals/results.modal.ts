@@ -3,7 +3,7 @@ import { UserModel } from '../../models';
 
 export class ResultsModal {
   private modal!: Modal;
-  showModal(word: string, users: UserModel[], lead: boolean) {
+  showModal(word: string, users: UserModel[], lead = false) {
     this.addButtonToNexnRoundForLead(lead);
     this.createModal(word, users);
     this.modal = new Modal('#roundResultsModal');

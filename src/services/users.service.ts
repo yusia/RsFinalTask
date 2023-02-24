@@ -1,8 +1,18 @@
 import { UserModel } from '../models/user.model';
+import { ConnectionService } from './connection.service';
 
 export class UsersService {
   userKey = 'usersettings';
-  private currentUser: UserModel | undefined;
+  private currentUser!: UserModel;
+  constructor(private connectionService: ConnectionService) {
+
+    this.connectionService.connection?.on('userId', (id: string) => {
+      if (!this.currentUser) {
+        this.currentUser = new UserModel('', '');
+      }
+      this.currentUser.id = id;
+    });
+  }
 
   getUsers(): UserModel[] {
     return [];
@@ -29,10 +39,10 @@ export class UsersService {
     return this.getSavedUser() || new UserModel(this.generateRandomName(), '');
   }
 
-  getCurrentUser(): UserModel | undefined {
+  getCurrentUser(): UserModel {
     return this.currentUser;
   }
-
+  
   generateRandomName(): string {
     const names = ['Water Tribe', 'Earth Kingdom', 'Fire Nation', 'Foggy Swamp Tribe', 'Stories', 'Artist'];
     const index = Math.floor(Math.random() * (names.length - 1));

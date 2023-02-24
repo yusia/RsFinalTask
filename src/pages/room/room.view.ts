@@ -49,12 +49,12 @@ export class RoomView {
     <span class="selected-word" id="selected-word">${word}
     </span>`;
   }
-  buildSendWordContainer(isLead: () => boolean) {
+  buildSendWordContainer(isLead: boolean) {
     const elem = document.getElementById('send-word-container') as HTMLElement;
     console.log(elem);
 
     elem.innerHTML = '';
-    if (isLead()) return;
+    if (isLead) return;
     elem.innerHTML = `<p class="send-word-text" >Send word</p>`;
     const input = document.createElement('input');
     input.classList.add('send-word-input');
