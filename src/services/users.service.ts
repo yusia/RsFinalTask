@@ -42,11 +42,7 @@ export class UsersService {
   getCurrentUser(): UserModel {
     return this.currentUser;
   }
-
-  isThisUserLead(leadId: string): boolean {
-    return this.currentUser.id === leadId;
-  }
-
+  
   generateRandomName(): string {
     const names = ['Water Tribe', 'Earth Kingdom', 'Fire Nation', 'Foggy Swamp Tribe', 'Stories', 'Artist'];
     const index = Math.floor(Math.random() * (names.length - 1));

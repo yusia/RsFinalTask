@@ -1,35 +1,23 @@
 import ControllerInterface from '../../../src/interfaces/controller.interface';
 import { RoomView } from './room.view';
-import { MessangerService, UsersService, ConnectionService } from '../../services';
+import { MessangerService, ConnectionService, GameService } from '../../services';
 import { MessangerController } from '../../components/messanger/messanger.controller';
 import { MessangerView } from '../../components/messanger/messanger.view';
-
 import { CanvasLogic } from './canvasLogic';
-
-import { UserModel, RoundModel, RoundViewModel } from '../../models';
+import { UserModel, RoundModel } from '../../models';
 import { ResultsModal } from '../../components/modals/results.modal';
 import { ChooseWord } from '../../components/modals/chooseWord.modal';
 import { Constants } from '../../contants';
 
 export class RoomController implements ControllerInterface {
   resultsModal: ResultsModal;
-  round: RoundViewModel;
 
   constructor(
     private viewInstance: RoomView,
-    private userService: UsersService,
     private messangerService: MessangerService,
-    public connectionService: ConnectionService
+    public connectionService: ConnectionService,
+    private gameService: GameService
   ) {
-
-    this.round = {
-      lead: new UserModel('',''),
-      round: 1,
-      intervalId: undefined,
-      timerId: undefined,
-      word: '',
-      allPlayers: []
-    };
 
     this.addEventListners();
     this.resultsModal = new ResultsModal();
@@ -59,7 +47,7 @@ export class RoomController implements ControllerInterface {
 
   renderView() {
     this.viewInstance.render();
-    const canvasLogic = new CanvasLogic(this.connectionService, () => { return this.userService.isThisUserLead(this.round.lead.id); });
+    const canvasLogic = new CanvasLogic(this.connectionService, () => { return this.gameService.isThisUserLead(); });
     canvasLogic.render();
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
@@ -68,9 +56,6 @@ export class RoomController implements ControllerInterface {
     this.listenRoundEvent();
   }
 
-  onRoundStop() {
-    this.resetTimer();
-  }
 
   listenRoundEvent() {
     this.connectionService.connection?.on('chooseWordForRound', (Words: string[]) => {
@@ -79,18 +64,19 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
-      this.round.lead = model.lead;
-      this.round.round = model.round;
-      this.round.word = model.word;
-      this.initRound(model);
+      this.gameService.initRound(model, this.onTimerChanged.bind(this));
+      
+      this.showWord(model.word);
+      this.viewInstance.setRound(model.round);
 
-      const input = this.viewInstance.buildSendWordContainer(this.userService.isThisUserLead(this.round.lead.id));
+      const input = this.viewInstance.buildSendWordContainer(this.gameService.isThisUserLead());
       if (input) {
         input.addEventListener('keydown', (e) => {
           this.sendWordForWin(e, input);
         });
       }
     });
+
 
     this.connectionService.connection?.on('wordForWin', (isWordTrue: boolean) => {
       this.viewInstance.rerenderWordContainer(isWordTrue);
@@ -101,78 +87,23 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundFinished', (model: { users: UserModel[]; lead: UserModel }) => {
-      this.round.lead.id = model.lead.id as string;
-      const isLead = this.userService.isThisUserLead(this.round.lead.id);
-      this.resultsModal.showModal(this.round.word, model.users, isLead);
-      this.onRoundStop();
+      this.gameService.round.lead.id = model.lead.id as string;
+      const isLead = this.gameService.isThisUserLead();
+      this.resultsModal.showModal(this.gameService.round.word, model.users, isLead);
+      this.gameService.onRoundStop();
+      this.viewInstance.setTimer(Constants.DefaultTimer);
     });
   }
 
-
-  initRound(model: RoundModel) {
-    let startTime = 90;
-    const wordHidden = !this.userService.isThisUserLead(this.round.lead.id);
-    this.showWord(wordHidden, model.word);
-
-    let word = model.word
-      .split('')
-      .map(() => '_')
-      .join('');
-    this.round.intervalId = setInterval(() => {
-      this.viewInstance.setTimer(startTime);
-      if (wordHidden) {
-        word = this.showLetter(startTime, word, model.word);
-      }
-      startTime--;
-    }, 1000);
-
-    this.setRoundTimer(model.round);
-  }
-
-  setRoundTimer(round: number) {
-    this.round.timerId = setTimeout(() => {
-      this.onRoundStop();
-      const tempround = round + 1;
-      this.viewInstance.setRound(tempround);
-    }, Constants.DefaultTimer * 10000);
-  }
-
-  showLetter(startTime: number, word: string, initWord: string): string {
-    switch (startTime) {
-      case 60: {
-        const i = word.length - 1;
-        return this.getTipAndDraw(i, word, initWord);
-      }
-      case 40: {
-        const i = Math.round(word.length / 2);
-        return this.getTipAndDraw(i, word, initWord);
-      }
-      case 30:
-        if (word.length > 6) {
-          const i = Math.round(word.length / 2) - 1;
-          return this.getTipAndDraw(i, word, initWord);
-        }
-        break;
-      case 10:
-        if (word.length > 3) {
-          const i = 0;
-          return this.getTipAndDraw(i, word, initWord);
-        }
-        break;
+  onTimerChanged(text: string, tick: number) {
+    this.viewInstance.setTimer(tick);
+    const wordHidden = !this.gameService.isThisUserLead();
+    if (wordHidden) {
+      this.viewInstance.drawWord(text);
     }
-
-    return word;
   }
-
-  getTipAndDraw(i: number, word: string, initWord: string) {
-    const letters = word.split('').map((l, index) => (i === index ? initWord.split('')[index] : l));
-    const fillWord = letters.join('');
-    const text = letters.join(' ');
-    this.viewInstance.drawWord(text);
-    return fillWord;
-  }
-
-  showWord(wordHidden: boolean, word: string) {
+  showWord(word: string) {
+    const wordHidden = !this.gameService.isThisUserLead();
     const text = wordHidden
       ? word
         .split('')
@@ -182,10 +113,6 @@ export class RoomController implements ControllerInterface {
     this.viewInstance.buildWordContainer(text);
   }
 
-  resetTimer() {
-    clearInterval(this.round.intervalId);
-    clearTimeout(this.round.timerId);
-  }
 
   listenUserChangeEvents() {
     this.connectionService.connection?.on('usersLeaved', (response: { users: UserModel[] }) => {
@@ -206,7 +133,6 @@ export class RoomController implements ControllerInterface {
   startTheGame() {
     this.connectionService.connection?.emit('startTheGame');
     this.viewInstance.deleteButtonToStartGame();
-    //
   }
 
   redirectToHomePage() {

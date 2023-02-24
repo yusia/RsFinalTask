@@ -1,7 +1,7 @@
 import 'bootstrap';
 import { Router, Route } from '../router';
 import { RoomView, RoomController } from '../pages/room';
-import { UsersService, MessangerService, ConnectionService, JoinRoomService } from '../services';
+import { UsersService, MessangerService, ConnectionService, GameService } from '../services';
 import { StartPageView, StartPageController } from '../pages/startPage';
 import { AppView } from './app.view';
 
@@ -10,14 +10,14 @@ export default class App {
   usersService: UsersService;
   connectionService: ConnectionService;
   messangerService: MessangerService;
-  joinRoomService: JoinRoomService;
   view: AppView;
+  gameService: GameService;
 
   constructor() {
     this.connectionService = new ConnectionService();
     this.usersService = new UsersService(this.connectionService);
     this.messangerService = new MessangerService(this.connectionService);
-    this.joinRoomService = new JoinRoomService(this.connectionService);
+    this.gameService = new GameService(this.usersService);
     this.view = new AppView();
     this.onUnload();
   }
@@ -32,7 +32,7 @@ export default class App {
       ),
       new Route(
         'room',
-        new RoomController(new RoomView(), this.usersService, this.messangerService, this.connectionService)
+        new RoomController(new RoomView(), this.messangerService, this.connectionService, this.gameService)
       ),
     ]);
     router.init();
