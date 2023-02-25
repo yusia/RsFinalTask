@@ -23,4 +23,8 @@ export class ConnectionService {
   isConnectionOpen() {
     return this.connection?.connected;
   }
+
+  disconnect(){
+    this.connection?.emit('usersLeaved');
+  }
 }

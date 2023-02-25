@@ -1,4 +1,4 @@
 export const Constants = {
-  serverUrl: 'http://localhost:4444',
+  serverUrl: 'https://clonefinalback.onrender.com/',
   DefaultTimer: 90
 };
