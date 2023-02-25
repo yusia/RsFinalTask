@@ -8,9 +8,9 @@ export class RoomView {
     elem.innerHTML = tick.toString();
   }
 
-  setRound(round: number) {
+  setRound(round: number, allRounds: number) {
     const elem = document.getElementById('round-container') as HTMLDivElement;
-    elem.innerHTML = round.toString();
+    elem.innerHTML = `Round: ${round}/${allRounds} `;
   }
 
   render() {
