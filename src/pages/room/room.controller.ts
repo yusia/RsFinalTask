@@ -7,10 +7,12 @@ import { CanvasLogic } from './canvasLogic';
 import { UserModel, RoundModel } from '../../models';
 import { ResultsModal } from '../../components/modals/results.modal';
 import { ChooseWord } from '../../components/modals/chooseWord.modal';
+import { FinalScore } from '../../components/modals/finalScore';
 import { Constants } from '../../contants';
 
 export class RoomController implements ControllerInterface {
   resultsModal: ResultsModal;
+  finalScoremodal: FinalScore;
 
   constructor(
     private viewInstance: RoomView,
@@ -18,9 +20,9 @@ export class RoomController implements ControllerInterface {
     public connectionService: ConnectionService,
     private gameService: GameService
   ) {
-
     this.addEventListners();
     this.resultsModal = new ResultsModal();
+    this.finalScoremodal = new FinalScore();
   }
 
   addEventListners() {
@@ -31,6 +33,10 @@ export class RoomController implements ControllerInterface {
 
     window.addEventListener('goNextRound', (() => {
       this.connectionService.connection?.emit('playerReadyToStartNextRound');
+    }) as EventListener);
+
+    window.addEventListener('finish-game', (() => {
+      this.connectionService.connection?.emit('gameFinished');
     }) as EventListener);
   }
   sendWordToServer(word: string) {
@@ -47,7 +53,9 @@ export class RoomController implements ControllerInterface {
 
   renderView() {
     this.viewInstance.render();
-    const canvasLogic = new CanvasLogic(this.connectionService, () => { return this.gameService.isThisUserLead(); });
+    const canvasLogic = new CanvasLogic(this.connectionService, () => {
+      return this.gameService.isThisUserLead();
+    });
     canvasLogic.render();
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
@@ -55,7 +63,6 @@ export class RoomController implements ControllerInterface {
     this.listenUserChangeEvents();
     this.listenRoundEvent();
   }
-
 
   listenRoundEvent() {
     this.connectionService.connection?.on('chooseWordForRound', (Words: string[]) => {
@@ -67,7 +74,7 @@ export class RoomController implements ControllerInterface {
       this.gameService.initRound(model, this.onTimerChanged.bind(this));
 
       this.showWord(model.word);
-      this.viewInstance.setRound(model.round);
+      this.viewInstance.setRound(model.round, model.allRounds);
 
       const input = this.viewInstance.buildSendWordContainer(this.gameService.isThisUserLead());
       if (input) {
@@ -76,7 +83,6 @@ export class RoomController implements ControllerInterface {
         });
       }
     });
-
 
     this.connectionService.connection?.on('wordForWin', (isWordTrue: boolean) => {
       this.viewInstance.rerenderWordContainer(isWordTrue);
@@ -107,9 +113,9 @@ export class RoomController implements ControllerInterface {
     const wordHidden = !this.gameService.isThisUserLead();
     const text = wordHidden
       ? word
-        .split('')
-        .map(() => '_')
-        .join(' ')
+          .split('')
+          .map(() => '_')
+          .join(' ')
       : word;
     this.viewInstance.buildWordContainer(text);
   }
@@ -126,6 +132,15 @@ export class RoomController implements ControllerInterface {
     this.connectionService.connection?.on('startTheGame', (playersCount: number) => {
       const button = this.viewInstance.renderButtonToStartGame(playersCount);
       button.addEventListener('click', this.startTheGame.bind(this));
+    });
+    this.connectionService.connection?.on('gameFinished', (response: { users: UserModel[] }) => {
+      //
+      this.gameService.resetTimer();
+      this.finalScoremodal.showModal(response.users);
+    });
+    this.connectionService.connection?.on('endGame', () => {
+      this.finalScoremodal.hideModal();
+      this.redirectToHomePage();
     });
   }
 
