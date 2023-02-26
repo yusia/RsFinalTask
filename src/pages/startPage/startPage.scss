@@ -45,6 +45,9 @@
   grid-area: D;
   display: flex;
   gap: 10px;
+  min-width: 150px;
+  overflow-x: scroll;
+  justify-content: space-between;
 }
 
 .arrow-right-cont {

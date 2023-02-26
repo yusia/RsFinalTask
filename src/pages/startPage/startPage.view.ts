@@ -36,7 +36,7 @@ export class StartPageView {
   }
 
   loadGaleryAvatars(doc: DocumentFragment) {
-    const avatarsIds = [1, 2, 3, 4];
+    const avatarsIds = [1, 2, 3, 4, 5, 6];
     const galery = doc.getElementById('avatars_galery') as HTMLDivElement;
     galery.innerHTML = '';
     avatarsIds.forEach((avatarId) => {

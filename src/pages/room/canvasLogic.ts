@@ -21,7 +21,6 @@ export class CanvasLogic {
 
     this.connectionService.connection?.on('canvasShare', (data: CanvasStep[]) => {
       this.drowCopy2(data);
-      this.removeDrawRights();
     });
   }
 
@@ -30,11 +29,16 @@ export class CanvasLogic {
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     CanvasLogic.canvas = canvas;
     CanvasLogic.context = context;
-    window.addEventListener('resize', this.resize);
+    window.addEventListener('resize', this.resize.bind(this));
     return {
       canvas: CanvasLogic.canvas,
       context: CanvasLogic.context,
     };
+  }
+
+  showToolbar(show: boolean) {
+    const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
+    toolbar.style.display = show ? 'flex' : 'none';
   }
 
   resize() {
@@ -49,9 +53,7 @@ export class CanvasLogic {
 
   giveDrawRights() {
     if (CanvasLogic.canvas) {
-      const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
-      toolbar.style.display = '';
-
+      this.showToolbar(this.isThisUserLead());
       const clearBtn = document.querySelector('.toolbar__clear') as HTMLElement;
       clearBtn.addEventListener('click', () => this.clearCanvas());
 
@@ -78,21 +80,6 @@ export class CanvasLogic {
     }
   }
 
-  removeDrawRights() {
-    if (CanvasLogic.canvas) {
-      const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
-      toolbar.style.display = 'none';
-      CanvasLogic.canvas.removeEventListener('mousedown', this.startDraw);
-      CanvasLogic.canvas.removeEventListener('mousemove', this.draw);
-      CanvasLogic.canvas.removeEventListener('mouseup', this.endDraw);
-      CanvasLogic.canvas.removeEventListener('mouseout', this.endDraw);
-
-      CanvasLogic.canvas.removeEventListener('touchstart', this.startDraw);
-      CanvasLogic.canvas.removeEventListener('touchmove', this.draw);
-      CanvasLogic.canvas.removeEventListener('touchend', this.endDraw);
-      CanvasLogic.canvas.removeEventListener('touchcancel', this.endDraw);
-    }
-  }
 
   startDraw() {
     if (!this.isThisUserLead()) return;

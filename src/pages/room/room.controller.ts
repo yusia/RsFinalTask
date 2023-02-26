@@ -14,6 +14,7 @@ import { Toast } from 'bootstrap';
 export class RoomController implements ControllerInterface {
   resultsModal: ResultsModal;
   finalScoremodal: FinalScore;
+  canvasLogic!: CanvasLogic;
 
   constructor(
     private viewInstance: RoomView,
@@ -27,6 +28,13 @@ export class RoomController implements ControllerInterface {
   }
 
   addEventListners() {
+
+    window.addEventListener('popstate', () => {
+      if (history.state.title !== 'Room') {
+        this.leaveRoom();
+      }
+    });
+
     window.addEventListener('chooseWord', ((event: CustomEvent) => {
       const word: string = event.detail.word;
       this.sendWordToServer(word);
@@ -54,10 +62,10 @@ export class RoomController implements ControllerInterface {
 
   renderView() {
     this.viewInstance.render();
-    const canvasLogic = new CanvasLogic(this.connectionService, () => {
+    this.canvasLogic = new CanvasLogic(this.connectionService, () => {
       return this.gameService.isThisUserLead();
     });
-    canvasLogic.render();
+    this.canvasLogic.render();
 
     const messanger = new MessangerController(new MessangerView(), this.messangerService);
     messanger.initView();
@@ -75,8 +83,9 @@ export class RoomController implements ControllerInterface {
       this.gameService.initRound(model, this.onTimerChanged.bind(this));
 
       this.showWord(model.word);
-      this.viewInstance.setRound(model.round, model.allRounds);
+      this.canvasLogic.showToolbar(this.gameService.isThisUserLead());
 
+      this.viewInstance.setRound(model.round, model.allRounds);
       const input = this.viewInstance.buildSendWordContainer(this.gameService.isThisUserLead());
       if (input) {
         input.addEventListener('keydown', (e) => {
@@ -126,8 +135,7 @@ export class RoomController implements ControllerInterface {
       if (response.users.length > 1) {
         this.viewInstance.renderNewPlayer(response.users);
       } else {
-        this.redirectToHomePage();
-        this.connectionService.disconnect();
+        this.leaveRoom();
       }
       this.showsMessage();
     });
@@ -140,20 +148,29 @@ export class RoomController implements ControllerInterface {
       const button = this.viewInstance.renderButtonToStartGame(playersCount);
       button.addEventListener('click', this.startTheGame.bind(this));
     });
+
     this.connectionService.connection?.on('gameFinished', (response: { users: UserModel[] }) => {
-      //
       this.gameService.resetTimer();
       this.finalScoremodal.showModal(response.users);
     });
+
     this.connectionService.connection?.on('endGame', () => {
       this.finalScoremodal.hideModal();
-      this.redirectToHomePage();
+      this.leaveRoom();
     });
   }
 
   startTheGame() {
     this.connectionService.connection?.emit('startTheGame');
     this.viewInstance.deleteButtonToStartGame();
+  }
+
+  leaveRoom() {
+    // this.resultsModal.hideModal();
+    // this.finalScoremodal.hideModal();
+    this.gameService.resetTimer();
+    this.redirectToHomePage();
+    this.connectionService.disconnect();
   }
 
   redirectToHomePage() {
