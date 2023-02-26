@@ -2,6 +2,7 @@ import ControllerInterface from '../../interfaces/controller.interface';
 import { StartPageView } from './startPage.view';
 import { ConnectionService, MessangerService, UsersService } from '../../services';
 import { UserModel } from '../../models/user.model';
+import { Loading } from '../../helpFunctions/Loading';
 
 export class StartPageController implements ControllerInterface {
   constructor(
@@ -17,8 +18,10 @@ export class StartPageController implements ControllerInterface {
   }
 
   async startGame(user: UserModel) {
+    Loading.show();
     const userId = await this.connectionService.openConnection();
     user.id = userId;
+    Loading.hide();
     this.saveUserSettings(user);
     this.messangerService.newClientF(user);
     this.goToRoomPage();
