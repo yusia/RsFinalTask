@@ -46,7 +46,7 @@ export class ResultsModal {
     body.append(buttonContainer);
   }
   hideModal() {
-    this.modal.hide();
+    if (this.modal) { this.modal.hide(); }
   }
 
   private bindNextRoundClick() {
