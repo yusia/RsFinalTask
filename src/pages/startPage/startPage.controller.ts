@@ -9,7 +9,7 @@ export class StartPageController implements ControllerInterface {
     private userService: UsersService,
     private connectionService: ConnectionService,
     private messangerService: MessangerService
-  ) {}
+  ) { }
 
   initView(): void {
     const tempUser = this.userService.getTempUser();
@@ -17,7 +17,8 @@ export class StartPageController implements ControllerInterface {
   }
 
   async startGame(user: UserModel) {
-    await this.connectionService.openConnection(user);
+    const userId = await this.connectionService.openConnection();
+    user.id = userId;
     this.saveUserSettings(user);
     this.messangerService.newClientF(user);
     this.goToRoomPage();
