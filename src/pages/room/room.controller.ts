@@ -92,6 +92,7 @@ export class RoomController implements ControllerInterface {
           this.sendWordForWin(e, input);
         });
       }
+      this.canvasLogic.clearCanvas();
     });
 
     this.connectionService.connection?.on('wordForWin', (isWordTrue: boolean) => {
