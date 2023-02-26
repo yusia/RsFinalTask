@@ -1,5 +1,17 @@
-
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.input-group {
+  margin: 0 auto;
+  max-width: 500px;
+}
 .start-btn {
+  margin: 0 auto;
+  max-width: 500px;
+  font-size: 24px;
   background-color: $friend-color;
   color: $light-color;
   box-shadow: rgb(141 103 2) 0px -8px 40px -3px;
@@ -12,7 +24,6 @@
 .room-section {
   display: flex;
   justify-content: space-around;
-
 }
 .avatar-container {
   margin: auto;
@@ -22,19 +33,30 @@
 }
 
 .avatar {
-   animation: vibrate-1 0.3s linear infinite both;
+  animation: vibrate-1 0.3s linear infinite both;
 }
 
 .avatars {
   display: grid;
   grid-template: 1fr 4fr 1fr;
-  grid-template-rows: 2fr 1fr;
+  grid-template-rows: 3fr 1fr;
   grid-template-areas:
-    'A B C'
-    'D D D';
+    "A B C"
+    "D D D";
   grid-column-gap: 20px;
   grid-row-gap: 20px;
   align-items: center;
+  padding: 30px 0px;
+  overflow: hidden;
+
+  @media (max-width: 767.98px) {
+    grid-template-areas:
+      "B B B"
+      "D D D"
+      "D D D";
+    grid-template-rows: 3fr 1fr 1fr;
+    padding: 10px 0px;
+  }
 }
 .arrow-left-cont {
   grid-area: A;
@@ -44,10 +66,10 @@
 .avatars_galery {
   grid-area: D;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   min-width: 150px;
-  overflow-x: scroll;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .arrow-right-cont {
@@ -55,11 +77,15 @@
   color: white;
 }
 .avatars_main {
+  display: flex;
+  justify-content: center;
   grid-area: B;
 }
 .avatar_thumb {
   width: 50px;
   cursor: pointer;
+  max-width: 80px;
+  flex: 1 0 30%;
 }
 .timer-container {
   border: $friend-color solid 1px;
