@@ -24,7 +24,7 @@ export class StartPageController implements ControllerInterface {
   }
 
   goToRoomPage() {
-    history.pushState({ title: 'Your game' }, 'newUrl', '/room');
+    history.pushState({ title: 'Room' }, 'newUrl', '/room');
     window.dispatchEvent(new Event('stateChange'));
   }
 

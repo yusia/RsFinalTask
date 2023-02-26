@@ -27,6 +27,13 @@ export class RoomController implements ControllerInterface {
   }
 
   addEventListners() {
+
+    window.addEventListener('popstate', () => {
+      if (history.state.title !== 'Room') {
+        this.leaveRoom();
+      }
+    });
+
     window.addEventListener('chooseWord', ((event: CustomEvent) => {
       const word: string = event.detail.word;
       this.sendWordToServer(word);
@@ -157,6 +164,8 @@ export class RoomController implements ControllerInterface {
   }
 
   leaveRoom() {
+    this.resultsModal.hideModal();
+    this.finalScoremodal.hideModal();
     this.gameService.resetTimer();
     this.redirectToHomePage();
     this.connectionService.disconnect();
