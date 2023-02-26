@@ -1,3 +1,4 @@
+import { Constants } from '../contants';
 import { UserModel } from '../models/user.model';
 import { ConnectionService } from './connection.service';
 
@@ -14,8 +15,9 @@ export class UsersService {
     });
   }
 
-  getUsers(): UserModel[] {
-    return [];
+  getUsers() {
+    fetch(`${Constants.serverUrl}/users`, { mode: 'no-cors'})
+      .then((response) => console.log(response));
   }
 
   saveUserSettings(user: UserModel) {
@@ -42,7 +44,7 @@ export class UsersService {
   getCurrentUser(): UserModel {
     return this.currentUser;
   }
-  
+
   generateRandomName(): string {
     const names = ['Water Tribe', 'Earth Kingdom', 'Fire Nation', 'Foggy Swamp Tribe', 'Stories', 'Artist'];
     const index = Math.floor(Math.random() * (names.length - 1));
