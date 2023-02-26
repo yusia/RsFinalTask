@@ -1,6 +1,6 @@
 import { UserModel, Page } from '../../models';
 import content from './startPage.html';
-import { debounce } from '../../helpFunctions/debounce'
+import { debounce } from '../../helpFunctions/debounce';
 
 export class StartPageView {
   private user: UserModel;
