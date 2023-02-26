@@ -36,6 +36,7 @@
   }
 }
 .canvas-outer {
+  position: relative;
   display: flex;
   flex-grow: 1;
   max-width: 500px;
@@ -48,11 +49,22 @@
   background-color: #fff;
   object-fit: contain;
   box-shadow: 2px 2px 12px 4px rgba(34, 60, 80, 0.51);
-  // важная инструкция для респонзива. Но криво работают координаты рисования.
-  // width: 100%;
   touch-action: none;
   border-radius: 7px;
   display: block;
+}
+// !
+.canvas-others {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+// !
+.canvas-others.show {
+  z-index: 1;
+  cursor: grab;
 }
 .toolbar {
   &__body {
