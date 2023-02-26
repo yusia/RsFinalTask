@@ -1,5 +1,6 @@
 import { UserModel, Page } from '../../models';
 import content from './startPage.html';
+import { debounce } from '../../helpFunctions/debounce'
 
 export class StartPageView {
   private user: UserModel;
@@ -60,10 +61,9 @@ export class StartPageView {
   }
 
   addStartListener(doc: DocumentFragment, onStartPlay: (newUser: UserModel) => void) {
-    doc.getElementById('start-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
+    doc.getElementById('start-btn')?.addEventListener('click', debounce(() => {
       onStartPlay(this.user);
-    });
+    },50));
   }
 
 
@@ -79,4 +79,6 @@ export class StartPageView {
       }
     });
   }
+
 }
+
