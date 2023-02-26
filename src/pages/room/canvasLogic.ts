@@ -25,12 +25,26 @@ export class CanvasLogic {
     });
   }
 
+
   setupCanvas(): { canvas: HTMLCanvasElement; context: CanvasRenderingContext2D } {
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     CanvasLogic.canvas = canvas;
     CanvasLogic.context = context;
     window.addEventListener('resize', this.resize.bind(this));
+
+    let doit: string | number | NodeJS.Timeout | undefined;
+    function resizedw() {
+      console.log('did it');
+    }
+    window.onresize = function () {
+      clearTimeout(doit);
+      doit = setTimeout(function () {
+        resizedw();
+      }, 100);
+    };
+
+
     return {
       canvas: CanvasLogic.canvas,
       context: CanvasLogic.context,
@@ -39,20 +53,18 @@ export class CanvasLogic {
 
   resize() {
     // console.log(this);
-    setTimeout(() => {
-      this.setupCanvas();
+    // setTimeout(() => {
+    this.setupCanvas();
 
-      // console.log('we resizing now');
-      if (CanvasLogic.context && CanvasLogic.canvas) {
-
-        // ! раскомменть и убери второй канвас с html, когда будет все готово
-        const canvasHtml = document.querySelector('.canvas') as Element;
-        const canvasHtmlWidth = window.getComputedStyle(canvasHtml).width.slice(0, -2);
-        console.log(Math.floor(+canvasHtmlWidth));
-        CanvasLogic.context.canvas.width = Math.floor(+canvasHtmlWidth);
-        CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
-      }
-    }, 500)
+    // console.log('we resizing now');
+    if (CanvasLogic.context && CanvasLogic.canvas) {
+      const canvasHtml = document.querySelector('.canvas-inner') as Element;
+      const canvasHtmlWidth = window.getComputedStyle(canvasHtml).width.slice(0, -2);
+      // console.log(Math.floor(+canvasHtmlWidth));
+      CanvasLogic.context.canvas.width = Math.floor(+canvasHtmlWidth);
+      CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
+    }
+    // }, 500)
 
   }
   // !
@@ -63,15 +75,15 @@ export class CanvasLogic {
   // !
 
   giveDrawRights() {
-    if (CanvasLogic.canvas) {
-
+    if (CanvasLogic.canvas && CanvasLogic.context) {
+      this.clearCanvas();
       // !test
       const switchBtn = document.querySelector('.toolbar__save') as HTMLElement;
       switchBtn.addEventListener('click', this.switchWiev);
       // !
 
       const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
-      toolbar.style.display = '';
+      toolbar.style.display = 'flex';
 
       const clearBtn = document.querySelector('.toolbar__clear') as HTMLElement;
       clearBtn.addEventListener('click', () => this.clearCanvas());
@@ -88,7 +100,7 @@ export class CanvasLogic {
       const downloadBtn = document.querySelector('.toolbar__download') as HTMLElement;
       downloadBtn.addEventListener('click', this.downloadPainting);
 
-      CanvasLogic.canvas.addEventListener('mousedown', this.startDraw);
+      CanvasLogic.canvas.addEventListener('mousedown', this.startDraw.bind(this));
       CanvasLogic.canvas.addEventListener('mousemove', this.draw.bind(this));
       CanvasLogic.canvas.addEventListener('mouseup', this.endDraw.bind(this));
       CanvasLogic.canvas.addEventListener('mouseout', this.endDraw.bind(this));
@@ -140,14 +152,16 @@ export class CanvasLogic {
 
     if (CanvasLogic.canvas && CanvasLogic.context) {
 
-      const canvasOffsetX = CanvasLogic.canvas.offsetLeft;
-      const canvasOffsetY = CanvasLogic.canvas.offsetTop;
+      const canvasOffsetX = CanvasLogic.canvas.getBoundingClientRect().x;
+      const canvasOffsetY = CanvasLogic.canvas.getBoundingClientRect().y;
       CanvasLogic.context.lineWidth = CanvasLogic.lineWidth;
       CanvasLogic.context.strokeStyle = CanvasLogic.lineColor;
       CanvasLogic.context.lineCap = 'round';
       CanvasLogic.context.lineJoin = 'round';
 
       let pointerX = (e as MouseEvent).clientX - canvasOffsetX;
+      console.log((e as MouseEvent).clientX, 'clientx');
+      console.log(canvasOffsetX);
       let pointerY = (e as MouseEvent).clientY - canvasOffsetY;
       if ((e as TouchEvent).changedTouches) {
         pointerX = (e as TouchEvent).changedTouches[0].clientX - canvasOffsetX;
