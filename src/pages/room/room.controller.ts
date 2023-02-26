@@ -126,8 +126,7 @@ export class RoomController implements ControllerInterface {
       if (response.users.length > 1) {
         this.viewInstance.renderNewPlayer(response.users);
       } else {
-        this.redirectToHomePage();
-        this.connectionService.disconnect();
+        this.leaveRoom();
       }
       this.showsMessage();
     });
@@ -140,20 +139,27 @@ export class RoomController implements ControllerInterface {
       const button = this.viewInstance.renderButtonToStartGame(playersCount);
       button.addEventListener('click', this.startTheGame.bind(this));
     });
+
     this.connectionService.connection?.on('gameFinished', (response: { users: UserModel[] }) => {
-      //
       this.gameService.resetTimer();
       this.finalScoremodal.showModal(response.users);
     });
+
     this.connectionService.connection?.on('endGame', () => {
       this.finalScoremodal.hideModal();
-      this.redirectToHomePage();
+      this.leaveRoom();
     });
   }
 
   startTheGame() {
     this.connectionService.connection?.emit('startTheGame');
     this.viewInstance.deleteButtonToStartGame();
+  }
+
+  leaveRoom() {
+    this.gameService.resetTimer();
+    this.redirectToHomePage();
+    this.connectionService.disconnect();
   }
 
   redirectToHomePage() {
