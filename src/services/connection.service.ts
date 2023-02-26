@@ -1,21 +1,19 @@
 import { io, Socket } from 'socket.io-client';
 import { Constants } from '../contants';
-import { UserModel } from '../models/user.model';
 
 export class ConnectionService {
   connection: Socket | undefined;
   constructor(private url = Constants.serverUrl) { }
 
-  async openConnection(user: UserModel) {
+  async openConnection(): Promise<string> {
     this.connection = io(this.url);
-    return this.listenConnection(user); 
+    return this.listenConnection();
   }
 
-  async listenConnection(user: UserModel) {
+  async listenConnection(): Promise<string> {
     return new Promise((resolve) => {
       this.connection?.on('connect', () => {
-        user.id = this.connection?.id as string;
-        resolve(user.id);
+        resolve(this.connection?.id || '');
       });
     });
   }
@@ -24,7 +22,7 @@ export class ConnectionService {
     return this.connection?.connected;
   }
 
-  disconnect(){
+  disconnect() {
     this.connection?.emit('usersLeaved');
   }
 }

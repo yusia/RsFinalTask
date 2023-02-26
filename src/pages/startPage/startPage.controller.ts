@@ -10,7 +10,7 @@ export class StartPageController implements ControllerInterface {
     private userService: UsersService,
     private connectionService: ConnectionService,
     private messangerService: MessangerService
-  ) {}
+  ) { }
 
   initView(): void {
     const tempUser = this.userService.getTempUser();
