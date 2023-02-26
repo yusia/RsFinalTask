@@ -54,12 +54,11 @@ export default class App {
         event.preventDefault();
         event.stopImmediatePropagation();
         event.returnValue = 'Would you like to leave the game?';
-        return 'Would you like to leave the game?';
       }
     });
     window.addEventListener('unload', (event) => {
       if (this.connectionService.isConnectionOpen()) {
-        this.connectionService.connection?.emit('usersLeaved');
+        this.connectionService.disconnect();
         event.preventDefault();
         event.stopImmediatePropagation();
       }

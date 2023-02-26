@@ -9,6 +9,7 @@ import { ResultsModal } from '../../components/modals/results.modal';
 import { ChooseWord } from '../../components/modals/chooseWord.modal';
 import { FinalScore } from '../../components/modals/finalScore';
 import { Constants } from '../../contants';
+import { Toast } from 'bootstrap';
 
 export class RoomController implements ControllerInterface {
   resultsModal: ResultsModal;
@@ -113,16 +114,22 @@ export class RoomController implements ControllerInterface {
     const wordHidden = !this.gameService.isThisUserLead();
     const text = wordHidden
       ? word
-          .split('')
-          .map(() => '_')
-          .join(' ')
+        .split('')
+        .map(() => '_')
+        .join(' ')
       : word;
     this.viewInstance.buildWordContainer(text);
   }
 
   listenUserChangeEvents() {
     this.connectionService.connection?.on('usersLeaved', (response: { users: UserModel[] }) => {
-      this.viewInstance.renderNewPlayer(response.users);
+      if (response.users.length > 1) {
+        this.viewInstance.renderNewPlayer(response.users);
+      } else {
+        this.redirectToHomePage();
+        this.connectionService.disconnect();
+      }
+      this.showsMessage();
     });
 
     this.connectionService.connection?.on('join', (message) => {
@@ -159,5 +166,12 @@ export class RoomController implements ControllerInterface {
       this.connectionService.connection?.emit('wordForWin', input.value);
       input.value = '';
     }
+  }
+
+  private showsMessage() {
+    const toastLiveExample = document.getElementById('information'
+    ) as HTMLElement;
+    const toast = new Toast(toastLiveExample);
+    toast.show();
   }
 }
