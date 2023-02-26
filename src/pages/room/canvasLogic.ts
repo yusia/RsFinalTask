@@ -21,7 +21,6 @@ export class CanvasLogic {
 
     this.connectionService.connection?.on('canvasShare', (data: CanvasStep[]) => {
       this.drowCopy2(data);
-      this.removeDrawRights();
     });
   }
 
@@ -51,6 +50,11 @@ export class CanvasLogic {
     };
   }
 
+  showToolbar(show: boolean) {
+    const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
+    toolbar.style.display = show ? 'flex' : 'none';
+  }
+
   resize() {
     // console.log(this);
     // setTimeout(() => {
@@ -75,15 +79,9 @@ export class CanvasLogic {
   // !
 
   giveDrawRights() {
-    if (CanvasLogic.canvas && CanvasLogic.context) {
-      this.clearCanvas();
-      // !test
-      const switchBtn = document.querySelector('.toolbar__save') as HTMLElement;
-      switchBtn.addEventListener('click', this.switchWiev);
-      // !
+    if (CanvasLogic.canvas) {
 
-      const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
-      toolbar.style.display = 'flex';
+      this.showToolbar(this.isThisUserLead());
 
       const clearBtn = document.querySelector('.toolbar__clear') as HTMLElement;
       clearBtn.addEventListener('click', () => this.clearCanvas());
@@ -111,6 +109,7 @@ export class CanvasLogic {
     }
   }
 
+
   removeDrawRights2() {
     if (CanvasLogic.canvas) {
       const copy = document.getElementById('.canvas-inner') as HTMLCanvasElement;
@@ -132,6 +131,7 @@ export class CanvasLogic {
       CanvasLogic.canvas.removeEventListener('touchcancel', this.endDraw);
     }
   }
+
 
   startDraw() {
     if (!this.isThisUserLead()) return;
