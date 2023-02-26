@@ -84,8 +84,9 @@ export class RoomController implements ControllerInterface {
 
       this.showWord(model.word);
       this.canvasLogic.showToolbar(this.gameService.isThisUserLead());
-
+      this.canvasLogic.clearCanvas();
       this.viewInstance.setRound(model.round, model.allRounds);
+      
       const input = this.viewInstance.buildSendWordContainer(this.gameService.isThisUserLead());
       if (input) {
         input.addEventListener('keydown', (e) => {
@@ -166,8 +167,8 @@ export class RoomController implements ControllerInterface {
   }
 
   leaveRoom() {
-    // this.resultsModal.hideModal();
-    // this.finalScoremodal.hideModal();
+    this.resultsModal.hideModal();
+    this.finalScoremodal.hideModal();
     this.gameService.resetTimer();
     this.redirectToHomePage();
     this.connectionService.disconnect();

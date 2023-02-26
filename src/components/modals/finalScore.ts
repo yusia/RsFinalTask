@@ -30,7 +30,7 @@ export class FinalScore {
   }
 
   hideModal() {
-    this.modal.hide();
+    if (this.modal) { this.modal.hide(); }
   }
 
   private bindNextRoundClick() {
