@@ -40,9 +40,8 @@ export class CanvasLogic {
       clearTimeout(doit);
       doit = setTimeout(function () {
         resizedw();
-      }, 100);
+      }, 300);
     };
-
 
     return {
       canvas: CanvasLogic.canvas,
@@ -56,27 +55,19 @@ export class CanvasLogic {
   }
 
   resize() {
-    // console.log(this);
-    // setTimeout(() => {
     this.setupCanvas();
-
-    // console.log('we resizing now');
     if (CanvasLogic.context && CanvasLogic.canvas) {
       const canvasHtml = document.querySelector('.canvas-inner') as Element;
       const canvasHtmlWidth = window.getComputedStyle(canvasHtml).width.slice(0, -2);
-      // console.log(Math.floor(+canvasHtmlWidth));
       CanvasLogic.context.canvas.width = Math.floor(+canvasHtmlWidth);
       CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
     }
-    // }, 500)
-
   }
-  // !
+  
   switchWiev() {
     const othersCanvas = document.querySelector('.canvas-others') as HTMLElement;
     othersCanvas.classList.toggle('show');
   }
-  // !
 
   giveDrawRights() {
     if (CanvasLogic.canvas) {
