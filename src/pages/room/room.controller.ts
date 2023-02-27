@@ -10,6 +10,7 @@ import { ChooseWord } from '../../components/modals/chooseWord.modal';
 import { FinalScore } from '../../components/modals/finalScore';
 import { Constants } from '../../contants';
 import { Toast } from 'bootstrap';
+import { Loading } from '../../components/modals/loading';
 
 export class RoomController implements ControllerInterface {
   resultsModal: ResultsModal;
@@ -80,20 +81,21 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
+      
+      Loading.hide();
       this.gameService.initRound(model, this.onTimerChanged.bind(this));
 
       this.showWord(model.word);
       this.canvasLogic.showToolbar(this.gameService.isThisUserLead());
       this.canvasLogic.clearCanvas();
       this.viewInstance.setRound(model.round, model.allRounds);
-      
+
       const input = this.viewInstance.buildSendWordContainer(this.gameService.isThisUserLead());
       if (input) {
         input.addEventListener('keydown', (e) => {
           this.sendWordForWin(e, input);
         });
       }
-      this.canvasLogic.clearCanvas();
     });
 
     this.connectionService.connection?.on('wordForWin', (isWordTrue: boolean) => {
@@ -108,6 +110,7 @@ export class RoomController implements ControllerInterface {
       this.gameService.round.lead.id = model.lead.id as string;
       const isLead = this.gameService.isThisUserLead();
       this.resultsModal.showModal(this.gameService.round.word, model.users, isLead);
+      Loading.show('Lead is selecting a new word. Please wait...');
       this.gameService.onRoundStop();
       this.viewInstance.setTimer(Constants.DefaultTimer);
     });
