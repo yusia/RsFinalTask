@@ -3,7 +3,7 @@
   //grid-template-columns: 20% auto 30%;
   grid-template-columns: 20% 50% 30%;
   grid-template-rows: 1fr;
-  grid-template-areas: 'users canvas chat';
+  grid-template-areas: "users canvas chat";
   gap: 0.15em;
 }
 
@@ -91,23 +91,23 @@
     background-size: cover;
   }
   &__clear {
-    background-image: url('./../asssets/discard.svg');
+    background-image: url("./../asssets/discard.svg");
   }
   &__undo {
-    background-image: url('./../asssets/forward.svg');
+    background-image: url("./../asssets/forward.svg");
   }
   &__save {
-    background-image: url('./../asssets/save.svg');
+    background-image: url("./../asssets/save.svg");
   }
   &__download {
-    background-image: url('./../asssets/download.svg');
+    background-image: url("./../asssets/download.svg");
   }
   &__info {
   }
 }
 #color-input {
   // background-image: url("./../asssets/color-picker.svg");
-  background-image: url('./../asssets/rgb-colors.svg');
+  background-image: url("./../asssets/rgb-colors.svg");
   height: 30px;
   width: 30px;
   background-size: cover;
@@ -127,6 +127,8 @@
 .user-list {
   display: flex;
   flex-direction: column;
+  max-height: 500px;
+  overflow-y: scroll;
 }
 .user {
   border-radius: 50%;
@@ -236,6 +238,7 @@
 .chat {
   grid-area: chat;
   height: 100%;
+  max-height: 500px;
   justify-self: center;
 }
 .inner-container {
@@ -248,10 +251,10 @@
 @media (max-width: 1350px) {
   .room-flex {
     grid-template-columns: 30% 70%;
-    grid-template-rows: auto minmax(auto,180px);
+    grid-template-rows: auto minmax(auto, 180px);
     grid-template-areas:
-      'users canvas'
-      'chat chat';
+      "users canvas"
+      "chat chat";
     gap: 2em;
   }
   .chat {
@@ -266,11 +269,11 @@
 @media (max-width: 1050px) {
   .room-flex {
     grid-template-columns: 100%;
-    grid-template-rows: auto auto minmax(auto,180px);
+    grid-template-rows: auto auto minmax(auto, 180px);
     grid-template-areas:
-      'users'
-      'canvas'
-      'chat';
+      "users"
+      "canvas"
+      "chat";
   }
   .chat {
     width: 95%;

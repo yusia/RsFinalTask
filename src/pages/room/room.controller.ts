@@ -80,7 +80,7 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('roundStarted', (model: RoundModel) => {
-      
+
       Loading.hide();
       this.gameService.initRound(model, this.onTimerChanged.bind(this));
 
@@ -114,6 +114,7 @@ export class RoomController implements ControllerInterface {
       Loading.show('Lead is selecting a new word. Please wait...');
       this.gameService.onRoundStop();
       this.viewInstance.setTimer(Constants.DefaultTimer);
+      this.canvasLogic.clearCanvas();
     });
   }
 
@@ -129,9 +130,9 @@ export class RoomController implements ControllerInterface {
     const wordHidden = !this.gameService.isThisUserLead();
     const text = wordHidden
       ? word
-          .split('')
-          .map(() => '_')
-          .join(' ')
+        .split('')
+        .map(() => '_')
+        .join(' ')
       : word;
     this.viewInstance.buildWordContainer(text);
   }
