@@ -26,10 +26,10 @@
   justify-content: space-around;
   background-repeat: no-repeat;
   background-color: $background-color;
+  overflow-y: auto;
+  padding-bottom: 15px;
 }
-.inner-container {
-  margin-top: 50px;
-}
+
 html,
 body {
   height: 100%;

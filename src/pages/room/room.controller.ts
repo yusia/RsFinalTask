@@ -29,7 +29,6 @@ export class RoomController implements ControllerInterface {
   }
 
   addEventListners() {
-
     window.addEventListener('popstate', () => {
       if (history.state.title !== 'Room') {
         this.leaveRoom();
@@ -87,7 +86,6 @@ export class RoomController implements ControllerInterface {
 
       this.showWord(model.word);
       this.canvasLogic.showToolbar(this.gameService.isThisUserLead());
-      this.canvasLogic.clearCanvas();
       this.viewInstance.setRound(model.round, model.allRounds);
 
       const input = this.viewInstance.buildSendWordContainer(this.gameService.isThisUserLead());
@@ -103,6 +101,9 @@ export class RoomController implements ControllerInterface {
     });
 
     this.connectionService.connection?.on('playerReadyToStartNextRound', () => {
+      //setTimeout(() => {
+      //  this.resultsModal.hideModal();
+      //}, 300);
       this.resultsModal.hideModal();
     });
 
@@ -128,9 +129,9 @@ export class RoomController implements ControllerInterface {
     const wordHidden = !this.gameService.isThisUserLead();
     const text = wordHidden
       ? word
-        .split('')
-        .map(() => '_')
-        .join(' ')
+          .split('')
+          .map(() => '_')
+          .join(' ')
       : word;
     this.viewInstance.buildWordContainer(text);
   }
@@ -191,8 +192,7 @@ export class RoomController implements ControllerInterface {
   }
 
   private showsMessage() {
-    const toastLiveExample = document.getElementById('information'
-    ) as HTMLElement;
+    const toastLiveExample = document.getElementById('information') as HTMLElement;
     const toast = new Toast(toastLiveExample);
     toast.show();
   }

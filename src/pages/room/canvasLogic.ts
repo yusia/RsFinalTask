@@ -24,13 +24,12 @@ export class CanvasLogic {
     });
   }
 
-
   setupCanvas(): { canvas: HTMLCanvasElement; context: CanvasRenderingContext2D } {
     const canvas = document.querySelector('.canvas-inner') as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     CanvasLogic.canvas = canvas;
     CanvasLogic.context = context;
-    window.addEventListener('resize', this.resize.bind(this));
+    // window.addEventListener('resize', this.resize.bind(this));
 
     let doit: string | number | NodeJS.Timeout | undefined;
     function resizedw() {
@@ -62,6 +61,7 @@ export class CanvasLogic {
       CanvasLogic.context.canvas.width = Math.floor(+canvasHtmlWidth);
       CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
     }
+    // }, 500)
   }
   
   switchWiev() {
@@ -71,7 +71,6 @@ export class CanvasLogic {
 
   giveDrawRights() {
     if (CanvasLogic.canvas) {
-
       this.showToolbar(this.isThisUserLead());
 
       const clearBtn = document.querySelector('.toolbar__clear') as HTMLElement;
@@ -100,7 +99,6 @@ export class CanvasLogic {
     }
   }
 
-
   removeDrawRights2() {
     if (CanvasLogic.canvas) {
       const copy = document.getElementById('.canvas-inner') as HTMLCanvasElement;
@@ -123,7 +121,6 @@ export class CanvasLogic {
     }
   }
 
-
   startDraw() {
     if (!this.isThisUserLead()) return;
     this.isDrawing = true;
@@ -142,7 +139,6 @@ export class CanvasLogic {
     }
 
     if (CanvasLogic.canvas && CanvasLogic.context) {
-
       const canvasOffsetX = CanvasLogic.canvas.getBoundingClientRect().x;
       const canvasOffsetY = CanvasLogic.canvas.getBoundingClientRect().y;
       CanvasLogic.context.lineWidth = CanvasLogic.lineWidth;

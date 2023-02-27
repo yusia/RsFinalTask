@@ -19,7 +19,7 @@ export default class App {
     this.messangerService = new MessangerService(this.connectionService);
     this.gameService = new GameService(this.usersService);
     this.view = new AppView();
-    this.usersService.getUsers(); //just to wake up server 
+    this.usersService.getUsers(); //just to wake up server
     this.onUnload();
   }
 
@@ -63,6 +63,6 @@ export default class App {
         event.preventDefault();
         event.stopImmediatePropagation();
       }
-    })
+    });
   }
 }
