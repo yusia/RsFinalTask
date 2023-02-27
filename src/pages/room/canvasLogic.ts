@@ -61,7 +61,7 @@ export class CanvasLogic {
       CanvasLogic.context.canvas.width = Math.floor(+canvasHtmlWidth);
       CanvasLogic.context.canvas.height = CanvasLogic.context.canvas.width;
     }
-    // }, 500)
+
   }
   
   switchWiev() {
@@ -96,28 +96,6 @@ export class CanvasLogic {
       CanvasLogic.canvas.addEventListener('touchmove', this.draw.bind(this));
       CanvasLogic.canvas.addEventListener('touchend', this.endDraw.bind(this));
       CanvasLogic.canvas.addEventListener('touchcancel', this.endDraw.bind(this));
-    }
-  }
-
-  removeDrawRights2() {
-    if (CanvasLogic.canvas) {
-      const copy = document.getElementById('.canvas-inner') as HTMLCanvasElement;
-      CanvasLogic.canvas.replaceWith(copy.cloneNode(true));
-    }
-  }
-  removeDrawRights() {
-    if (CanvasLogic.canvas) {
-      const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
-      toolbar.style.display = 'none';
-      CanvasLogic.canvas.removeEventListener('mousedown', this.startDraw);
-      CanvasLogic.canvas.removeEventListener('mousemove', this.draw);
-      CanvasLogic.canvas.removeEventListener('mouseup', this.endDraw);
-      CanvasLogic.canvas.removeEventListener('mouseout', this.endDraw);
-
-      CanvasLogic.canvas.removeEventListener('touchstart', this.startDraw);
-      CanvasLogic.canvas.removeEventListener('touchmove', this.draw);
-      CanvasLogic.canvas.removeEventListener('touchend', this.endDraw);
-      CanvasLogic.canvas.removeEventListener('touchcancel', this.endDraw);
     }
   }
 
@@ -256,19 +234,6 @@ export class CanvasLogic {
     context.beginPath();
   }
 
-  drowCopy() {
-    const canvas = document.querySelectorAll('.canvas-inner')[1] as HTMLCanvasElement;
-    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-    setInterval(() => {
-      if (!CanvasLogic.linesSteps.length) {
-        this.clearCanvas(canvas);
-      }
-
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      CanvasLogic.linesSteps.forEach((el) => CanvasLogic.drawFromLinesSteps(canvas, el));
-    }, 500);
-  }
-
   drowCopy2(array: CanvasStep[]) {
     const canvas = document.querySelectorAll('.canvas-inner')[0] as HTMLCanvasElement;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -285,8 +250,5 @@ export class CanvasLogic {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
-    // this.removeDrawRights();
-
-    // CanvasLogic.drowCopy()
   }
 }
