@@ -2,7 +2,8 @@ import ControllerInterface from '../../interfaces/controller.interface';
 import { StartPageView } from './startPage.view';
 import { ConnectionService, MessangerService, UsersService } from '../../services';
 import { UserModel } from '../../models/user.model';
-import { Loading } from '../../helpFunctions/Loading';
+import { Loading } from '../../components/modals/loading';
+
 
 export class StartPageController implements ControllerInterface {
   constructor(
