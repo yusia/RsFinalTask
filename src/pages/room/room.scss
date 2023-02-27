@@ -130,6 +130,31 @@
   max-height: 500px;
   overflow-y: scroll;
 }
+
+.user-list::-webkit-scrollbar {
+  width: 7px;
+}
+
+.user-list::-webkit-scrollbar-track {
+  border-radius: 7px;
+  -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+  // background-color: #f9f9fd81;
+  background-color: #abcdef86;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background-color: #2c2f2bf7;
+  border-radius: 7px;
+  background-image: -webkit-gradient(
+    linear,
+    0 0,
+    0 100%,
+    color-stop(0.5, rgba(255, 255, 255, 0.25)),
+    color-stop(0.5, transparent),
+    to(transparent)
+  );
+}
+
 .user {
   border-radius: 50%;
   height: 100px;
