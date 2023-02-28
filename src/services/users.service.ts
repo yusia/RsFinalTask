@@ -16,7 +16,7 @@ export class UsersService {
   }
 
   getUsers() {
-    fetch(`${Constants.serverUrl}/users`, { mode: 'no-cors'})
+    fetch(`${Constants.serverUrl}users`, { mode: 'no-cors'})
       .then((response) => console.log(response));
   }
 

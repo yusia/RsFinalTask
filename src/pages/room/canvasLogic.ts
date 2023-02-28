@@ -99,12 +99,6 @@ export class CanvasLogic {
     }
   }
 
-  removeDrawRights2() {
-    if (CanvasLogic.canvas) {
-      const copy = document.getElementById('.canvas-inner') as HTMLCanvasElement;
-      CanvasLogic.canvas.replaceWith(copy.cloneNode(true));
-    }
-  }
   removeDrawRights() {
     if (CanvasLogic.canvas) {
       const toolbar = document.querySelector('.toolbar__tools') as HTMLElement;
@@ -285,7 +279,6 @@ export class CanvasLogic {
     this.setupCanvas();
     this.resize();
     this.giveDrawRights();
-    // this.removeDrawRights();
 
     // CanvasLogic.drowCopy()
   }

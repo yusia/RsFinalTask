@@ -15,6 +15,7 @@
   background-color: $friend-color;
   color: $light-color;
   box-shadow: rgb(141 103 2) 0px -8px 40px -3px;
+  min-width: 66%;
 }
 
 .room-settings-container {
@@ -37,23 +38,18 @@
 }
 
 .avatars {
-  display: grid;
-  grid-template: 1fr 4fr 1fr;
-  grid-template-rows: 3fr 1fr;
-  grid-template-areas:
-    "A B C"
-    "D D D";
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
+  display: flex;
+  
   align-items: center;
   padding: 30px 0px;
   overflow: hidden;
+  flex-direction: column;
 
   @media (max-width: 767.98px) {
     grid-template-areas:
-      "B B B"
-      "D D D"
-      "D D D";
+      'B B B'
+      'D D D'
+      'D D D';
     grid-template-rows: 3fr 1fr 1fr;
     padding: 10px 0px;
   }
@@ -66,10 +62,10 @@
 .avatars_galery {
   grid-area: D;
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
   min-width: 150px;
-  justify-content: space-around;
+  justify-content: flex-start;
+  overflow-x: scroll;
 }
 
 .arrow-right-cont {
@@ -128,3 +124,21 @@
     }
   }
 }
+
+.info {
+  color: $friend-color;
+  margin: 15px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+.logo {
+  width: 150px;
+}
+.info-inner{
+
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
