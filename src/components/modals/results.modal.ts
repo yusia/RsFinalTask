@@ -23,7 +23,7 @@ export class ResultsModal {
                     <div class="current-score"> ${user.currentScore} </div>
                 </div>`;
     });
-    modalResults.innerHTML = result;
+    modalResults.innerHTML = result + `<div class="">Please wait when Lead select next word! </div>`;
     this.bindNextRoundClick();
   }
   private addButtonToNexnRoundForLead(lead: boolean) {
