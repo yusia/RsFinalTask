@@ -1,0 +1,65 @@
+<section id="main" class="container">
+  <div class="info-bar">
+    <div id="timer-container" class="timer-container">
+      <img src="../../../assets/package-lock.png" class="thumb-timer" />
+      <div id="timer" class="timer-count">90</div>
+    </div>
+    <div id="word-container"> Waiting when Lead start the game ...</div>
+    <div id="round-container" class="round-container">
+      <span>Round</span>
+      <div id="current-round">1</div>
+      <span>/ 3</span>
+    </div>
+  </div>
+  <div class="room-flex">
+    <div id="users-container"></div>
+    <div class="canvas">
+      <div class="canvas-outer">
+        <canvas class="canvas-inner" width="50" height="50"></canvas>
+      </div>
+      <div class="toolbar__body">
+        <div class="toolbar__tools">
+          <input type="color" class="toolbar__color-all" id="color-input" value="#563d7c" title="Choose your color" />
+          <input type="range" class="toolbar__line-width" min="1" max="71" step="5" value="11" id="line-width" />
+          <div class="toolbar__clear t-button"></div>
+          <div class="toolbar__undo t-button"></div>
+          <div class="toolbar__save t-button"></div>
+          <div class="toolbar__download t-button"></div>
+        </div>
+      </div>
+      <div id="send-word-container" class="send-word-container"></div>
+    </div>
+    <div class="chat" id="chat">chat</div>
+  </div>
+  <div id="button-to-start-game-container" class="button-to-start-game-container"></div>
+  <div class="modal fade" id="roundResultsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog roundResultsDialog">
+      <div class="modal-content roundResultsContent" id="modal-winners-container">
+        <div class="modal-body">
+          <div class="user-img-container" id="roundResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="chooseWordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered chooseWordDialog">
+      <div class="modal-content chooseWordContent">
+        <div class="modal-container" id="chooseWordBody"></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="FinalScoreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered chooseWordDialog">
+      <div class="modal-content chooseWordContent">
+        <div class="modal-container" id="finalScore"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="finish-game">Finish Game!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

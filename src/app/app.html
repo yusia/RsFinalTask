@@ -1,0 +1,28 @@
+<div class="d-inline-flex content">
+  <div class="main-container">
+    <nav class="navbar">
+      <a class="nav-link">Sketch</a>
+      <div class="info-container">
+        <a class="nav-link">settings <img class="settings-icon" src="./../asssets/settings2.svg"></a>
+        <a class="nav-link" id="current-user"></a>
+      </div>
+    </nav>
+    <div id="content"></div>
+  </div>
+  <div class="toast-container top-0 end-0 p-3">
+    <div id="information" class="toast " role="alert" aria-live="assertive">
+      <div class="toast-header">
+        <strong class="me-auto">Attention!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Someone has leaved the game!
+      </div>
+    </div>
+  </div>
+</div>
+<div id="loading" class="loading-mask text-warning hidden">
+  <div class="spinner-border" role="status">
+  </div>
+  <span class="sr-only loading-text">Loading...</span>
+</div>
